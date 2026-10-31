@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUMLog Enterprise — Sovereign Compliance, Endpoint PII Mesh &amp; Threat Defense Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #06080d;
+            --bg-secondary: #0c101a;
+            --bg-card: rgba(16, 23, 38, 0.82);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(0, 240, 255, 0.3);
+            --accent-cyan: #00f0ff;
+            --accent-emerald: #10b981;
+            --accent-purple: #8b5cf6;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(0, 240, 255, 0.04) 0%, transparent 40%),
+                radial-gradient(circle at 90% 85%, rgba(139, 92, 246, 0.04) 0%, transparent 40%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(12, 16, 26, 0.92);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.85rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .brand { display: flex; align-items: center; gap: 0.85rem; }
+        .brand-logo {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; color: #000; font-size: 1.2rem;
+            box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+        }
+
+        .brand-title {
+            font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        .brand-badge {
+            font-size: 0.65rem; background: rgba(0, 240, 255, 0.15);
+            color: var(--accent-cyan); border: 1px solid rgba(0, 240, 255, 0.35);
+            padding: 2px 8px; border-radius: 20px; font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+
+        .brand-subtitle { font-size: 0.75rem; color: var(--text-muted); }
+
+        .header-actions { display: flex; align-items: center; gap: 1rem; }
+
+        /* Threat Mode Switcher */
+        .mode-toggle-card {
+            background: rgba(0, 0, 0, 0.45);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 0.25rem 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active-smooth {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-emerald);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .toggle-btn.active-block {
+            background: rgba(244, 63, 94, 0.2);
+            color: var(--accent-rose);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+        }
+
+        .status-pill {
+            display: flex; align-items: center; gap: 0.45rem;
+            font-size: 0.75rem; background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color); padding: 0.35rem 0.75rem;
+            border-radius: 30px; font-family: 'JetBrains Mono', monospace;
+        }
+
+        .pulse-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--accent-emerald); box-shadow: 0 0 8px var(--accent-emerald);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: white; border: none; padding: 0.45rem 0.95rem;
+            border-radius: 8px; font-weight: 600; font-size: 0.75rem;
+            cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.4rem;
+        }
+        .btn-action:hover {
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.5); transform: translateY(-1px);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1rem;
+            padding: 1.25rem 2rem 0.5rem;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            transition: all 0.2s;
+        }
+        .metric-card:hover { border-color: var(--border-glow); }
+        .metric-label {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px;
+            color: var(--text-muted); margin-bottom: 0.4rem; display: flex; justify-content: space-between;
+        }
+        .metric-value {
+            font-size: 1.6rem; font-weight: 800; font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+        }
+        .metric-sub {
+            font-size: 0.7rem; color: var(--accent-emerald); margin-top: 0.3rem;
+            display: flex; align-items: center; gap: 0.25rem;
+        }
+
+        /* Main Workspace Navigation */
+        .nav-tabs-bar {
+            padding: 0.5rem 2rem 0;
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .main-tab {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.55rem 1.15rem;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .main-tab.active {
+            background: var(--bg-card);
+            color: var(--accent-cyan);
+            border-color: var(--border-color) var(--border-color) transparent var(--border-color);
+        }
+
+        main {
+            flex: 1;
+            padding: 1.25rem 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Tables & Lists */
+        .panel-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            max-height: 520px;
+            overflow-y: auto;
+        }
+
+        table.enterprise-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+        table.enterprise-table th {
+            text-align: left;
+            padding: 0.65rem 0.75rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(12, 16, 26, 0.75);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        table.enterprise-table td {
+            padding: 0.7rem 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            white-space: nowrap;
+        }
+        table.enterprise-table tr:hover {
+            background: rgba(0, 240, 255, 0.03);
+            cursor: pointer;
+        }
+
+        .badge {
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-audit { background: rgba(14, 165, 233, 0.15); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.3); }
+        .badge-threat { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); }
+        .badge-leak { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .badge-biz { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-risk-crit { background: rgba(244, 63, 94, 0.2); color: #ff4d6d; border: 1px solid #ff4d6d; }
+        .badge-risk-high { background: rgba(245, 158, 11, 0.2); color: #f59e0b; border: 1px solid #f59e0b; }
+        .badge-risk-med { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid #38bdf8; }
+        .badge-risk-low { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid #10b981; }
+
+        .hash-str { color: var(--text-muted); font-size: 0.7rem; }
+
+        /* Grid for Threat & Leaks */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        /* Storage Sinks Grid */
+        .sinks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1rem;
+        }
+        .sink-card {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.25rem;
+        }
+        .sink-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Sandbox */
+        .sandbox-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+        textarea.code-area {
+            width: 100%;
+            height: 140px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            resize: vertical;
+        }
+        textarea.code-area:focus { outline: none; border-color: var(--accent-cyan); }
+
+        .output-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--accent-emerald);
+            white-space: pre-wrap;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        /* Modal */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 100;
+            justify-content: center; align-items: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--bg-secondary); border: 1px solid var(--border-color);
+            border-radius: 16px; width: 90%; max-width: 680px; padding: 2rem;
+            position: relative;
+        }
+        .close-btn {
+            position: absolute; top: 1.25rem; right: 1.25rem; background: transparent;
+            border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="brand">
+            <div class="brand-logo">T</div>
+            <div>
+                <div class="brand-title">
+                    TUMLog Enterprise
+                    <span class="brand-badge">ISO 27001 &bull; Sec 26 &bull; PDPA</span>
+                </div>
+                <div class="brand-subtitle">Omnichannel Sovereign Compliance, Endpoint PII Mesh &amp; Threat Defense &bull; Powered by TUM</div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <!-- Smooth / Active Block Toggle -->
+            <div class="mode-toggle-card">
+                <span>DEFENSE:</span>
+                <button class="toggle-btn active-smooth" id="btnSmooth" onclick="setDefenseMode('AuditOnly')">Smooth (Audit)</button>
+                <button class="toggle-btn" id="btnBlock" onclick="setDefenseMode('ActiveBlock')">Active (403 Block)</button>
+            </div>
+
+            <div class="status-pill">
+                <div class="pulse-dot"></div>
+                <span>NTP: <strong>time.navy.mi.th</strong></span>
+            </div>
+
+            <div class="status-pill">
+                <span>ISO 27001: <strong style="color:var(--accent-emerald)">99.8% PASS</strong></span>
+            </div>
+
+            <button class="btn-action" onclick="openCertModal()">
+                <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+                Audit Certificate
+            </button>
+        </div>
+    </header>
+
+    <!-- Top Metrics -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <div class="metric-label">
+                <span>WORM Chained Logs</span>
+                <span>CCA Sec 26</span>
+            </div>
+            <div class="metric-value" id="valTotalLogs">1,620,410</div>
+            <div class="metric-sub">&check; 90-Day Immutable &bull; 0 Tamperings</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">
+                <span>Endpoints Discovered</span>
+                <span>PII Flow Map</span>
+            </div>
+            <div class="metric-value" style="color:var(--accent-cyan)" id="valEndpoints">18 Total</div>
+            <div class="metric-sub">&bull; 6 Routes Carry Thai IDs/PANs</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">
+                <span>Inbound Threats Blocked</span>
+                <span>OWASP Top 10</span>
+            </div>
+            <div class="metric-value" style="color:var(--accent-rose)" id="valThreats">184 Intercepts</div>
+            <div class="metric-sub">&check; SQLi, XSS, Path Traversal</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">
+                <span>Outbound Leaks Caught</span>
+                <span>Data Protection</span>
+            </div>
+            <div class="metric-value" style="color:var(--accent-amber)" id="valLeaks">42 Prevented</div>
+            <div class="metric-sub">&check; DB Errors &amp; Plaintext PII Blocked</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">
+                <span>HTTP Middleware Latency</span>
+                <span>Zero-Copy Ring</span>
+            </div>
+            <div class="metric-value" style="color:var(--accent-emerald)">0.11 ms</div>
+            <div class="metric-sub">&check; &lt; 0.5% CPU Overhead</div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs-bar">
+        <button class="main-tab active" onclick="switchMainTab('tabLive', this)">
+            <span>📜 Live Stream &amp; Trace</span>
+        </button>
+        <button class="main-tab" onclick="switchMainTab('tabEndpoints', this)">
+            <span>🗺️ Endpoint PII Mesh</span>
+        </button>
+        <button class="main-tab" onclick="switchMainTab('tabDefense', this)">
+            <span>🛡️ Bidirectional Defense</span>
+        </button>
+        <button class="main-tab" onclick="switchMainTab('tabSinks', this)">
+            <span>🗄️ Storage Sinks (Multi-Dest)</span>
+        </button>
+        <button class="main-tab" onclick="switchMainTab('tabSandbox', this)">
+            <span>⚡ Interactive Sandbox</span>
+        </button>
+    </div>
+
+    <!-- Main Content Panels -->
+    <main>
+        <!-- TAB 1: Live Log Stream & Trace Context -->
+        <div class="tab-content active" id="tabLive">
+            <div class="panel-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem">
+                    <h3 style="font-size:1rem; font-weight:700">Live Cryptographic Audit Trail (ISO 27001 / OWASP Taxonomy)</h3>
+                    <div style="font-size:0.75rem; color:var(--text-muted); font-family:'JetBrains Mono'">
+                        Merkle Root: <strong style="color:var(--accent-cyan)">7f82a17cb42d...</strong>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="enterprise-table">
+                        <thead>
+                            <tr>
+                                <th>NTP TIMESTAMP</th>
+                                <th>ACTION (ISO TAXONOMY)</th>
+                                <th>CORRELATION ID</th>
+                                <th>ROUTE</th>
+                                <th>IP ADDRESS</th>
+                                <th>SANITIZED PAYLOAD</th>
+                                <th>DISPATCHED SINKS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="liveLogTbody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: Endpoint PII Data Flow Matrix -->
+        <div class="tab-content" id="tabEndpoints">
+            <div class="panel-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem">
+                    <div>
+                        <h3 style="font-size:1rem; font-weight:700">Discovered Application API Endpoints &amp; PII Data Flow</h3>
+                        <p style="font-size:0.75rem; color:var(--text-secondary)">Automatic route cataloging mapping inbound/outbound PII exposure under PDPA B.E. 2562</p>
+                    </div>
+                    <span class="badge badge-audit">18 Cataloged Endpoints</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="enterprise-table">
+                        <thead>
+                            <tr>
+                                <th>HTTP ROUTE</th>
+                                <th>METHOD</th>
+                                <th>INBOUND PII</th>
+                                <th>OUTBOUND PII</th>
+                                <th>DETECTED PII TYPES</th>
+                                <th>INVOCATIONS</th>
+                                <th>THREAT TARGETS</th>
+                                <th>RISK LEVEL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="endpointTbody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: Bidirectional Defense (Inbound vs Outbound) -->
+        <div class="tab-content" id="tabDefense">
+            <div class="split-grid">
+                <!-- Inbound Threats -->
+                <div class="panel-box">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem">
+                        <h3 style="font-size:0.95rem; font-weight:700; color:var(--accent-rose)">🛡️ Inbound Threats (OWASP Top 10)</h3>
+                        <span class="badge badge-threat">Real-Time Intercept</span>
+                    </div>
+                    <div id="inboundThreatList">
+                        <div style="background:rgba(244,63,94,0.06); border-left:3px solid var(--accent-rose); padding:0.75rem; border-radius:0 8px 8px 0; margin-bottom:0.75rem">
+                            <div style="display:flex; justify-content:space-between; font-weight:700; color:var(--accent-rose); font-size:0.75rem">
+                                <span>SQL Injection: UNION SELECT Attack</span>
+                                <span>Critical</span>
+                            </div>
+                            <div style="font-size:0.7rem; color:var(--text-secondary); font-family:'JetBrains Mono'; margin-top:0.25rem">
+                                Route: /api/v1/auth/login &bull; IP: 203.0.113.19 &bull; Action: Sanitized &amp; Audited
+                            </div>
+                        </div>
+
+                        <div style="background:rgba(244,63,94,0.06); border-left:3px solid var(--accent-rose); padding:0.75rem; border-radius:0 8px 8px 0; margin-bottom:0.75rem">
+                            <div style="display:flex; justify-content:space-between; font-weight:700; color:var(--accent-rose); font-size:0.75rem">
+                                <span>Path Traversal: Relative Directory Escape</span>
+                                <span>High</span>
+                            </div>
+                            <div style="font-size:0.7rem; color:var(--text-secondary); font-family:'JetBrains Mono'; margin-top:0.25rem">
+                                Route: /api/v1/documents/download &bull; IP: 198.51.100.82 &bull; Match: ../../etc/passwd
+                            </div>
+                        </div>
+
+                        <div style="background:rgba(244,63,94,0.06); border-left:3px solid var(--accent-rose); padding:0.75rem; border-radius:0 8px 8px 0; margin-bottom:0.75rem">
+                            <div style="display:flex; justify-content:space-between; font-weight:700; color:var(--accent-rose); font-size:0.75rem">
+                                <span>Stored XSS: Script Tag Payload</span>
+                                <span>High</span>
+                            </div>
+                            <div style="font-size:0.7rem; color:var(--text-secondary); font-family:'JetBrains Mono'; margin-top:0.25rem">
+                                Route: /api/v1/feedback/submit &bull; IP: 192.0.2.44 &bull; Match: &lt;script&gt;alert(1)&lt;/script&gt;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outbound Leaks Prevented -->
+                <div class="panel-box">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem">
+                        <h3 style="font-size:0.95rem; font-weight:700; color:var(--accent-amber)">🔒 Outbound Data Leaks Prevented</h3>
+                        <span class="badge badge-leak">Egress Shield</span>
+                    </div>
+                    <div id="outboundLeakList">
+                        <div style="background:rgba(245,158,11,0.06); border-left:3px solid var(--accent-amber); padding:0.75rem; border-radius:0 8px 8px 0; margin-bottom:0.75rem">
+                            <div style="display:flex; justify-content:space-between; font-weight:700; color:var(--accent-amber); font-size:0.75rem">
+                                <span>Outbound PII Exfiltration Masked</span>
+                                <span>High</span>
+                            </div>
+                            <div style="font-size:0.7rem; color:var(--text-secondary); font-family:'JetBrains Mono'; margin-top:0.25rem">
+                                Prevented return of Thai ID: 1-XXXX-XXXXX-XX-1 to unauthenticated client
+                            </div>
+                        </div>
+
+                        <div style="background:rgba(245,158,11,0.06); border-left:3px solid var(--accent-amber); padding:0.75rem; border-radius:0 8px 8px 0; margin-bottom:0.75rem">
+                            <div style="display:flex; justify-content:space-between; font-weight:700; color:var(--accent-amber); font-size:0.75rem">
+                                <span>Database Syntax Error Suppressed</span>
+                                <span>High</span>
+                            </div>
+                            <div style="font-size:0.7rem; color:var(--text-secondary); font-family:'JetBrains Mono'; margin-top:0.25rem">
+                                Suppressed internal SQL Server error dump; replaced with secure error token
+                            </div>
+                        </div>
+
+                        <div style="background:rgba(245,158,11,0.06); border-left:3px solid var(--accent-amber); padding:0.75rem; border-radius:0 8px 8px 0; margin-bottom:0.75rem">
+                            <div style="display:flex; justify-content:space-between; font-weight:700; color:var(--accent-amber); font-size:0.75rem">
+                                <span>Private Key Leak Blocked</span>
+                                <span>Critical</span>
+                            </div>
+                            <div style="font-size:0.7rem; color:var(--text-secondary); font-family:'JetBrains Mono'; margin-top:0.25rem">
+                                Intercepted accidental JSON dump containing RSA Private Key header
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: Storage Sinks (Multi-Destination) -->
+        <div class="tab-content" id="tabSinks">
+            <div class="panel-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem">
+                    <div>
+                        <h3 style="font-size:1rem; font-weight:700">Multi-Destination Pluggable Storage Sinks</h3>
+                        <p style="font-size:0.75rem; color:var(--text-secondary)">Deliver sanitized, chained logs to sovereign disk, SIEM, OpenSearch, and Cloud Lock</p>
+                    </div>
+                    <button class="btn-action">+ Add Destination</button>
+                </div>
+
+                <div class="sinks-grid">
+                    <div class="sink-card">
+                        <div class="sink-header">
+                            <strong style="color:var(--accent-emerald)">Local Sovereign WORM</strong>
+                            <span class="badge badge-biz">PRIMARY ACTIVE</span>
+                        </div>
+                        <div style="font-size:0.75rem; font-family:'JetBrains Mono'; color:var(--text-secondary); line-height:1.6">
+                            <div>Target: <code>./tum_logs/tumlog_*.jsonl</code></div>
+                            <div>Policy: <strong>90-Day WORM (Sec 26)</strong></div>
+                            <div>Chain: <strong>SHA-256 Merkle Root</strong></div>
+                            <div>Latency: <strong>0.04 ms (Local NVMe)</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="sink-card">
+                        <div class="sink-header">
+                            <strong style="color:var(--accent-cyan)">Syslog (RFC 5424)</strong>
+                            <span class="badge badge-audit">TLS CONNECTED</span>
+                        </div>
+                        <div style="font-size:0.75rem; font-family:'JetBrains Mono'; color:var(--text-secondary); line-height:1.6">
+                            <div>Target: <code>syslog://siem.corp:514</code></div>
+                            <div>Format: <strong>RFC 5424 Structured Data</strong></div>
+                            <div>Security: <strong>Mutual TLS v1.3</strong></div>
+                            <div>Status: <strong>Healthy &bull; 0 Loss</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="sink-card">
+                        <div class="sink-header">
+                            <strong style="color:var(--accent-purple)">Elasticsearch / OpenSearch</strong>
+                            <span class="badge badge-biz">CLUSTER GREEN</span>
+                        </div>
+                        <div style="font-size:0.75rem; font-family:'JetBrains Mono'; color:var(--text-secondary); line-height:1.6">
+                            <div>Index: <code>tumlog-audit-events-2026</code></div>
+                            <div>Batch Size: <strong>100 docs / flush</strong></div>
+                            <div>Index Rate: <strong>2,400 docs/sec</strong></div>
+                            <div>Nodes: <strong>3 Shards Active</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="sink-card">
+                        <div class="sink-header">
+                            <strong style="color:var(--accent-amber)">AWS S3 Object Lock</strong>
+                            <span class="badge badge-leak">WORM COMPLIANT</span>
+                        </div>
+                        <div style="font-size:0.75rem; font-family:'JetBrains Mono'; color:var(--text-secondary); line-height:1.6">
+                            <div>Bucket: <code>s3://tum-compliance-audit-vault</code></div>
+                            <div>Retention: <strong>Compliance Mode (365d)</strong></div>
+                            <div>Sync Interval: <strong>Daily Batch Seal</strong></div>
+                            <div>Signed By: <strong>AWS KMS HSM</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: Interactive Sandbox -->
+        <div class="tab-content" id="tabSandbox">
+            <div class="panel-box">
+                <h3 style="font-size:1rem; font-weight:700; margin-bottom:0.5rem">⚡ Interactive Inbound &amp; Outbound Redaction Sandbox</h3>
+                <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:1rem">
+                    Test how TUMLog inspects inbound payloads, redacts Thai Citizen IDs (Modulo-11), credit cards (Luhn), and prevents outbound database error leaks.
+                </p>
+
+                <div class="sandbox-panel">
+                    <div>
+                        <div style="font-size:0.75rem; font-weight:600; margin-bottom:0.4rem; color:var(--text-secondary)">INPUT PAYLOAD / RAW HTTP BODY:</div>
+                        <textarea class="code-area" id="sandInput">{
+  "action": "user.verify",
+  "nationalId": "1100701234561",
+  "creditCard": "4111-1111-1111-1111",
+  "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "query": "SELECT * FROM users WHERE id = 1 UNION SELECT user, pass FROM admin",
+  "debugError": "Microsoft OLE DB Provider for SQL Server: syntax error at or near 'SELECT'"
+}</textarea>
+                        <div style="margin-top:0.75rem; display:flex; gap:0.5rem">
+                            <button class="btn-action" onclick="runSandbox()">Run Inbound &amp; Outbound Scan</button>
+                            <button class="tab-btn" onclick="clearSandbox()">Clear</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="font-size:0.75rem; font-weight:600; margin-bottom:0.4rem; color:var(--text-secondary)">INSPECTION &amp; REDACTION TELEMETRY:</div>
+                        <div class="output-box" id="sandOutput">Click 'Run Inbound &amp; Outbound Scan' to process with TUMLog engine.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Certification Modal -->
+    <div class="modal" id="certModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeCertModal()">&times;</button>
+            <h2 style="font-size:1.25rem; margin-bottom:0.5rem; display:flex; align-items:center; gap:0.5rem">
+                🏛️ Official Regulatory Compliance Audit Certificate
+            </h2>
+            <p style="font-size:0.8rem; color:var(--text-secondary)">
+                Cryptographic Chain of Custody verified for Thai MDES, ISO 27001 (A.12.4), and PDPA B.E. 2562.
+            </p>
+
+            <div style="border:2px solid var(--accent-emerald); padding:1.25rem; border-radius:12px; background:rgba(16,185,129,0.03); margin-top:1rem; text-align:center">
+                <h3 style="color:var(--accent-emerald); margin-bottom:0.5rem; font-size:1.1rem">VERIFIED COMPLIANT</h3>
+                <div style="text-align:left; font-size:0.75rem; font-family:'JetBrains Mono'; background:rgba(0,0,0,0.5); padding:1rem; border-radius:8px; line-height:1.6">
+                    <div><strong>Organization:</strong> TUM Trust Security (Powered by TUM)</div>
+                    <div><strong>Standard 1:</strong> Thai Computer Crime Act B.E. 2560 Section 26 (90-Day WORM)</div>
+                    <div><strong>Standard 2:</strong> ISO/IEC 27001:2022 Annex A.12.4 (Logging &amp; Monitoring)</div>
+                    <div><strong>Standard 3:</strong> Thai PDPA B.E. 2562 (Zero Plaintext PII Guarantee)</div>
+                    <div><strong>Time Synchronization:</strong> NTP Stratum 1 (Royal Thai Navy: <code>time.navy.mi.th</code>)</div>
+                    <div><strong>Active Defense Mode:</strong> <span id="modalModeLabel" style="color:var(--accent-emerald)">AuditOnly (Smooth)</span></div>
+                    <div><strong>Global Merkle Head:</strong> 7f82a17cb42d88190e294b...9103e</div>
+                    <div><strong>Integrity Check:</strong> <span style="color:var(--accent-emerald)">100% UNBROKEN CHAIN OF CUSTODY</span></div>
+                </div>
+            </div>
+
+            <div style="margin-top:1.5rem; display:flex; justify-content:flex-end; gap:0.75rem">
+                <button class="btn-action" style="background:#334155" onclick="closeCertModal()">Close</button>
+                <button class="btn-action" onclick="window.print()">Print / Export Audit Bundle</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentDefenseMode = "AuditOnly";
+
+        const sampleLogs = [
+            {
+                time: "2026-10-15T02:54:12.102Z",
+                action: "DATA.READ",
+                badge: "badge-audit",
+                corrId: "corr_9b4e1822a10",
+                route: "/api/v1/customers/profile",
+                ip: "203.144.144.1",
+                payload: "Customer profile queried: Citizen ID 1-XXXX-XXXXX-XX-1 (Modulo-11 masked)",
+                sinks: "LocalWorm, Syslog"
+            },
+            {
+                time: "2026-10-15T02:54:08.419Z",
+                action: "SEC.THREAT_DETECTED",
+                badge: "badge-threat",
+                corrId: "corr_812cfa99002",
+                route: "/api/v1/auth/login",
+                ip: "203.0.113.19",
+                payload: "SQL Injection vector 'UNION SELECT user, pass' intercepted & sanitized",
+                sinks: "LocalWorm, Syslog, OpenSearch"
+            },
+            {
+                time: "2026-10-15T02:54:02.880Z",
+                action: "SEC.LEAK_PREVENTED",
+                badge: "badge-leak",
+                corrId: "corr_1028ba491a0",
+                route: "/api/v1/billing/invoice",
+                ip: "171.96.12.8",
+                payload: "Outbound leak prevented: Database syntax error and PAN 4111-XXXX-XXXX-1111 concealed",
+                sinks: "LocalWorm, S3ObjectLock"
+            },
+            {
+                time: "2026-10-15T02:53:49.120Z",
+                action: "AUTH.LOGIN",
+                badge: "badge-audit",
+                corrId: "corr_4401bb22f81",
+                route: "/api/v1/auth/thaid/callback",
+                ip: "180.180.20.9",
+                payload: "User authenticated via ThaID OpenID Connect assertion",
+                sinks: "LocalWorm, Syslog"
+            },
+            {
+                time: "2026-10-15T02:53:30.901Z",
+                action: "BIZ.TRANSACTION",
+                badge: "badge-biz",
+                corrId: "corr_331002aa11e",
+                route: "/api/v1/payments/checkout",
+                ip: "192.168.1.104",
+                payload: "Payment 4,500 THB processed successfully via PromptPay QR",
+                sinks: "LocalWorm, Syslog, S3ObjectLock"
+            }
+        ];
+
+        const sampleEndpoints = [
+            { route: "/api/v1/kyc/verify", method: "POST", inPii: true, outPii: true, types: "ThaiNationalId, Passport", count: "14,280", threats: 2, risk: "Critical", riskBadge: "badge-risk-crit" },
+            { route: "/api/v1/payments/checkout", method: "POST", inPii: true, outPii: false, types: "CreditCardNumber", count: "89,410", threats: 4, risk: "High", riskBadge: "badge-risk-high" },
+            { route: "/api/v1/customers/profile", method: "GET", inPii: false, outPii: true, types: "ThaiNationalId, PhoneNumber", count: "42,100", threats: 1, risk: "High", riskBadge: "badge-risk-high" },
+            { route: "/api/v1/auth/login", method: "POST", inPii: false, outPii: false, types: "None", count: "128,900", threats: 12, risk: "High", riskBadge: "badge-risk-high" },
+            { route: "/api/v1/documents/download", method: "GET", inPii: false, outPii: false, types: "None", count: "6,200", threats: 6, risk: "Medium", riskBadge: "badge-risk-med" },
+            { route: "/api/v1/public/health", method: "GET", inPii: false, outPii: false, types: "None", count: "450,000", threats: 0, risk: "Low", riskBadge: "badge-risk-low" }
+        ];
+
+        function renderLogs() {
+            const tbody = document.getElementById("liveLogTbody");
+            tbody.innerHTML = "";
+            sampleLogs.forEach(l => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${l.time}</td>
+                    <td><span class="badge ${l.badge}">${l.action}</span></td>
+                    <td style="color:var(--accent-cyan)">${l.corrId}</td>
+                    <td style="font-weight:600">${l.route}</td>
+                    <td>${l.ip}</td>
+                    <td style="color:var(--text-secondary); max-width:280px; overflow:hidden; text-overflow:ellipsis">${l.payload}</td>
+                    <td style="color:var(--text-muted)">${l.sinks}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderEndpoints() {
+            const tbody = document.getElementById("endpointTbody");
+            tbody.innerHTML = "";
+            sampleEndpoints.forEach(e => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td style="font-weight:600; color:var(--text-primary)">${e.route}</td>
+                    <td><span class="badge badge-audit">${e.method}</span></td>
+                    <td>${e.inPii ? '<strong style="color:var(--accent-rose)">YES</strong>' : '<span style="color:var(--text-muted)">No</span>'}</td>
+                    <td>${e.outPii ? '<strong style="color:var(--accent-rose)">YES</strong>' : '<span style="color:var(--text-muted)">No</span>'}</td>
+                    <td style="color:var(--accent-amber)">${e.types}</td>
+                    <td>${e.count}</td>
+                    <td><strong style="color:${e.threats > 0 ? 'var(--accent-rose)' : 'var(--text-muted)'}">${e.threats}</strong></td>
+                    <td><span class="badge ${e.riskBadge}">${e.risk}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function switchMainTab(tabId, btn) {
+            document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+            document.querySelectorAll(".main-tab").forEach(b => b.classList.remove("active"));
+            document.getElementById(tabId).classList.add("active");
+            btn.classList.add("active");
+        }
+
+        function setDefenseMode(mode) {
+            currentDefenseMode = mode;
+            const bSmooth = document.getElementById("btnSmooth");
+            const bBlock = document.getElementById("btnBlock");
+            if (mode === "AuditOnly") {
+                bSmooth.className = "toggle-btn active-smooth";
+                bBlock.className = "toggle-btn";
+                document.getElementById("modalModeLabel").innerText = "AuditOnly (Smooth - Non-Disruptive)";
+                document.getElementById("modalModeLabel").style.color = "var(--accent-emerald)";
+            } else {
+                bSmooth.className = "toggle-btn";
+                bBlock.className = "toggle-btn active-block";
+                document.getElementById("modalModeLabel").innerText = "ActiveBlock (HTTP 403 Enforcement)";
+                document.getElementById("modalModeLabel").style.color = "var(--accent-rose)";
+            }
+        }
+
+        function runSandbox() {
+            const input = document.getElementById("sandInput").value;
+            const output = document.getElementById("sandOutput");
+            let sanitized = input;
+            let telemetry = [];
+
+            // Thai ID Modulo-11
+            const thaiIdRegex = /\b\d{13}\b|\b\d{1}-\d{4}-\d{5}-\d{2}-\d{1}\b/g;
+            sanitized = sanitized.replace(thaiIdRegex, (m) => {
+                const d = m.replace(/-/g, "");
+                if (d.length === 13) {
+                    let s = 0;
+                    for (let i = 0; i < 12; i++) s += parseInt(d[i]) * (13 - i);
+                    if ((11 - (s % 11)) % 10 === parseInt(d[12])) {
+                        telemetry.push(`[INBOUND PII] Thai ID Modulo-11 Verified: ${m} -> ${d[0]}-XXXX-XXXXX-XX-${d[12]}`);
+                        return `${d[0]}-XXXX-XXXXX-XX-${d[12]}`;
+                    }
+                }
+                return m;
+            });
+
+            // Credit Card Luhn
+            const ccRegex = /\b(?:\d{4}[ -]?){3}\d{4}\b|\b\d{15,16}\b/g;
+            sanitized = sanitized.replace(ccRegex, (m) => {
+                const d = m.replace(/[ -]/g, "");
+                let s = 0, alt = false;
+                for (let i = d.length - 1; i >= 0; i--) {
+                    let n = parseInt(d[i]);
+                    if (alt) { n *= 2; if (n > 9) n = (n % 10) + 1; }
+                    s += n; alt = !alt;
+                }
+                if (s % 10 === 0 && d.length >= 13) {
+                    telemetry.push(`[INBOUND PII] Card Luhn Verified: ${m} -> ${d.substring(0,4)}-XXXX-XXXX-${d.substring(d.length-4)}`);
+                    return `${d.substring(0,4)}-XXXX-XXXX-${d.substring(d.length-4)}`;
+                }
+                return m;
+            });
+
+            // Threats
+            let threatFound = null;
+            if (/union\s+select/i.test(input)) {
+                threatFound = "CRITICAL: SQL Injection UNION SELECT attack vector detected";
+            }
+
+            // Outbound DB error
+            if (/Microsoft OLE DB Provider|syntax error/i.test(input)) {
+                telemetry.push("[OUTBOUND LEAK PREVENTED] Database syntax error concealed");
+                sanitized = sanitized.replace(/Microsoft OLE DB Provider[\s\S]*?'SELECT'/g, "[SEC_SUPPRESSED: Database internal error detail concealed]");
+            }
+
+            let report = "=== TUMLog Enterprise Inspection & Redaction Result ===\n";
+            report += `Execution Mode: ${currentDefenseMode}\n`;
+            report += `Correlation ID: corr_${Math.random().toString(16).substring(2, 10)}\n\n`;
+
+            if (threatFound) {
+                report += `⚠️ INBOUND THREAT: ${threatFound}\n`;
+                report += `   Action Taken: ${currentDefenseMode === 'ActiveBlock' ? 'BLOCKED HTTP 403 FORBIDDEN' : 'AUDITED & SANITIZED (SMOOTH)'}\n\n`;
+            } else {
+                report += `🛡️ INBOUND STATUS: Clean (No OWASP injection signatures)\n\n`;
+            }
+
+            if (telemetry.length > 0) {
+                report += `🔒 REDACTIONS APPLIED:\n`;
+                telemetry.forEach(t => report += `  &bull; ${t}\n`);
+            }
+
+            report += `\nFINAL EGRESS / PERSISTED PAYLOAD:\n${sanitized}`;
+            output.innerText = report;
+        }
+
+        function clearSandbox() {
+            document.getElementById("sandInput").value = "";
+            document.getElementById("sandOutput").innerText = "Cleared. Paste or type content to inspect.";
+        }
+
+        function openCertModal() { document.getElementById("certModal").classList.add("active"); }
+        function closeCertModal() { document.getElementById("certModal").classList.remove("active"); }
+
+        // Initial render
+        renderLogs();
+        renderEndpoints();
+    </script>
+</body>
+</html>
