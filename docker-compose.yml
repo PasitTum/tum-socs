@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.3-alpine
+    container_name: tum-opコミュニティ-clickhouse
+    ports:
+      - "8123:8123" # HTTP Ingestion Port (used by ClickHouseSinkAdapter)
+      - "9000:9000" # Native TCP Client Port
+    environment:
+      - CLICKHOUSE_DB=tum_siem
+      - CLICKHOUSE_USER=tum_admin
+      - CLICKHOUSE_PASSWORD=tum_sovereign_2026
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - clickhouse_logs:/var/log/clickhouse-server
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8123/ping || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+
+  tum-opコミュニティ-siem:
+    image: mcr.microsoft.com/dotnet/runtime:8.0-alpine
+    container_name: tum-opensiem-core
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - CLICKHOUSE_ENDPOINT=http://clickhouse:8123
+      - CLICKHOUSE_DATABASE=tum_siem
+      - CLICKHOUSE_USER=tum_admin
+      - CLICKHOUSE_PASSWORD=tum_sovereign_2026
+      - TUM_RISK_THRESHOLD=70.0
+      - TUM_DEFENSE_MODE=AuditOnly
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  clickhouse_data:
+    name: tum_siem_clickhouse_data
+  clickhouse_logs:
+    name: tum_siem_clickhouse_logs

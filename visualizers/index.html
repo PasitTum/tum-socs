@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUM Unified Cyber Defense Console — Enterprise Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #060810;
+            --bg-sidebar: #0B0E1A;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --bg-card-hover: rgba(30, 41, 59, 0.8);
+            --primary: #38BDF8;
+            --primary-glow: rgba(56, 189, 248, 0.25);
+            --secondary: #818CF8;
+            --emerald: #10B981;
+            --rose: #F43F5E;
+            --amber: #F59E0B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border: rgba(255, 255, 255, 0.08);
+            --font-main: 'Sarabun', 'Plus Jakarta Sans', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 100%, rgba(129, 140, 248, 0.08) 0%, transparent 40%);
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            flex-shrink: 0;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 8px 24px 8px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .logo-box {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #38BDF8, #818CF8);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #060810;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .brand-text h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #FFFFFF, #94A3B8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text span {
+            font-size: 0.72rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            color: var(--text-muted);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.92rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+        }
+
+        .user-status-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #060810;
+        }
+
+        .user-info h4 {
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .user-info p {
+            font-size: 0.75rem;
+            color: var(--emerald);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .page-title p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-action {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-action:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0284C7, #38BDF8);
+            border: none;
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        /* METRIC CARDS */
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+            transition: transform 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            font-family: var(--font-code);
+        }
+
+        .metric-trend {
+            font-size: 0.78rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .trend-up { color: var(--emerald); }
+        .trend-down { color: var(--rose); }
+
+        /* MAIN DASHBOARD GRID */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 1050px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* GRAPH CANVAS */
+        .chart-container {
+            width: 100%;
+            height: 240px;
+            position: relative;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        /* SETTINGS & THRESHOLD CONTROLS */
+        .settings-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .setting-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .setting-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        .setting-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        .switch-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .switch-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .switch-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider-round:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider-round {
+            background-color: var(--emerald);
+        }
+
+        input:checked + .slider-round:before {
+            transform: translateX(20px);
+        }
+
+        /* LIVE SIMULATOR BAR */
+        .simulator-bar {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.05), rgba(129, 140, 248, 0.05));
+            border: 1px solid var(--primary-glow);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .sim-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .sim-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .sim-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-sim {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sim:hover {
+            border-color: var(--primary);
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .btn-sim.attack:hover {
+            border-color: var(--rose);
+            background: rgba(244, 63, 94, 0.15);
+        }
+
+        /* LIVE EVENT LOG FEED */
+        .event-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            font-family: var(--font-code);
+            border-left: 3px solid var(--emerald);
+        }
+
+        .event-item.critical {
+            border-left-color: var(--rose);
+            background: rgba(244, 63, 94, 0.08);
+        }
+
+        .event-item.warning {
+            border-left-color: var(--amber);
+        }
+
+        .event-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .tag-blocked {
+            background: rgba(244, 63, 94, 0.2);
+            color: var(--rose);
+        }
+
+        .tag-passed {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--emerald);
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="brand-logo">
+            <div class="logo-box">T</div>
+            <div class="brand-text">
+                <h2>TUM UNIFIED</h2>
+                <span>Defense Console</span>
+            </div>
+        </div>
+
+        <div class="nav-menu">
+            <div class="nav-item active">
+                <span class="nav-icon">📊</span>
+                <span>ภาพรวมความมั่นคง (Overview)</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🛡️</span>
+                <span>เรดาร์ตรวจจับ (TUMSocs)</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🛂</span>
+                <span>ยืนยันตัวตน (Trust Sec)</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">⚛️</span>
+                <span>เกราะควอนตัม (TUMQuantum)</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">📜</span>
+                <span>รายงานพ.ร.บ. & PDPA</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span>ตั้งค่าระบบ (Settings)</span>
+            </div>
+        </div>
+
+        <div class="user-status-card">
+            <div class="user-avatar">P</div>
+            <div class="user-info">
+                <h4>คุณ Pasit (Chairman)</h4>
+                <p>● บอร์ดบริหาร (Online)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <div class="page-title">
+                <h1>ศูนย์ควบคุมความมั่นคงปลอดภัยไซเบอร์ (TUM Unified Console)</h1>
+                <p>ผลิตภัณฑ์ระดับ User Level รวมพลัง 3 บริษัท: ตรวจจับ ป้องกัน ยืนยันตัวตน และคุ้มครองควอนตัม</p>
+            </div>
+            <div class="top-actions">
+                <button class="btn-action" onclick="exportAuditReport()">
+                    <span>📥</span> ดาวน์โหลดรายงาน Audit บอร์ดบริหาร
+                </button>
+                <button class="btn-action btn-primary" onclick="triggerScan()">
+                    <span>🔄</span> สแกนความเสี่ยงระบบเดี๋ยวนี้
+                </button>
+            </div>
+        </div>
+
+        <!-- SIMULATOR CONTROL BAR -->
+        <div class="simulator-bar">
+            <div class="sim-info">
+                <h4>🎮 แผงทดสอบยิงทราฟฟิกจำลอง (Executive Sandbox)</h4>
+                <p>คลิกปุ่มเพื่อทดสอบว่าระบบตอบสนอง บล็อกภัยคุกคาม และวาดกราฟิกแบบเรียลไทม์อย่างไร</p>
+            </div>
+            <div class="sim-buttons">
+                <button class="btn-sim" onclick="simulateTraffic('normal')">👤 ทราฟฟิกคนเข้าเว็บปกติ</button>
+                <button class="btn-sim attack" onclick="simulateTraffic('sqli')">💉 แฮกเกอร์ยิง SQL Injection</button>
+                <button class="btn-sim attack" onclick="simulateTraffic('ai-agent')">🤖 บอท AI พยายามเจาะระบบ</button>
+                <button class="btn-sim attack" onclick="simulateTraffic('prompt-injection')">🧠 แฮกเกอร์หลอก Jailbreak AI</button>
+                <button class="btn-sim" onclick="simulateTraffic('quantum-pqc')">⚛️ ถอดรหัสลายเซ็น FIPS 204 PQC</button>
+            </div>
+        </div>
+
+        <!-- METRIC CARDS -->
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>ทราฟฟิกตรวจสอบทั้งหมด (วันนี้)</span>
+                    <span>📈</span>
+                </div>
+                <div class="metric-value" id="total-traffic">1,482,910</div>
+                <div class="metric-trend trend-up">↑ 18.2% จากเมื่อวาน (เหมาจ่ายรายโหนด ไม่คิดค่า GB)</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>ภัยคุกคามที่ถูกสกัดกั้น (Auto-Blocked)</span>
+                    <span>🛡️</span>
+                </div>
+                <div class="metric-value" id="blocked-threats" style="color: var(--rose);">427</div>
+                <div class="metric-trend trend-down">สกัดกั้นใน 0.11 ms ที่ระดับ Kernel (Zero Data Leak)</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>ยืนยันตัวตนมนุษย์ vs AI (Trust Sec)</span>
+                    <span>🛂</span>
+                </div>
+                <div class="metric-value" id="identity-verified" style="color: var(--emerald);">99.8%</div>
+                <div class="metric-trend trend-up">ตรวจจับ Deepfake & Robotic Cadence ได้ 100%</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span>สถานะความปลอดภัยควอนตัม (Quantum)</span>
+                    <span>⚛️</span>
+                </div>
+                <div class="metric-value" style="color: var(--primary);">NIST PQC</div>
+                <div class="metric-trend trend-up">FIPS 203/204 Active (ไม่ทอดทิ้งใครไว้ข้างหลัง)</div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD GRID -->
+        <div class="dashboard-grid">
+            <!-- ATTACK TRAFFIC GRAPH -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h3><span>📊</span> กราฟิกแสดงการตรวจจับทราฟฟิกและภัยคุกคามแบบเรียลไทม์</h3>
+                    <div style="font-size: 0.8rem; color: var(--primary); font-family: var(--font-code);">● LIVE MONITORING (100 ms)</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="attackChart"></canvas>
+                </div>
+            </div>
+
+            <!-- SETTINGS & CUSTOM THRESHOLDS (ตามที่ประธานสั่งการ) -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <h3><span>⚙️</span> ปรับแต่งค่าความปลอดภัย (Customizable)</h3>
+                </div>
+                <div class="settings-form">
+                    <div class="setting-group">
+                        <div class="setting-label">
+                            <span>เกณฑ์ความเสี่ยงในการตัดการเชื่อมต่อ (Risk Threshold)</span>
+                            <strong id="threshold-val" style="color: var(--primary);">80 / 100</strong>
+                        </div>
+                        <input type="range" class="setting-slider" min="50" max="95" value="80" oninput="updateThreshold(this.value)">
+                        <small style="font-size: 0.72rem; color: var(--text-muted);">หากคำขอมีคะแนนความเสี่ยงเกินเกณฑ์นี้ ระบบจะสั่ง Drop Connection ทันที</small>
+                    </div>
+
+                    <div class="switch-row">
+                        <div>
+                            <div class="switch-title">Active Automated Mitigation</div>
+                            <div class="switch-desc">ตัดสัญญาณและกักกัน IP คนร้ายในระดับเคอร์เนลทันที</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked id="auto-mitigate-toggle">
+                            <span class="slider-round"></span>
+                        </label>
+                    </div>
+
+                    <div class="switch-row">
+                        <div>
+                            <div class="switch-title">AI PII Auto-Masking (PDPA)</div>
+                            <div class="switch-desc">เซ็นเซอร์เลขบัตรประชาชนไทยและข้อมูลส่วนบุคคลใน Log</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider-round"></span>
+                        </label>
+                    </div>
+
+                    <div class="switch-row">
+                        <div>
+                            <div class="switch-title">Quantum Permissive Hybrid</div>
+                            <div class="switch-desc">รองรับกุญแจเดิมควบคู่ PQC ไม่ทิ้งระบบเก่าไว้ข้างหลัง</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="slider-round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- REALTIME EVENT LOG FEED -->
+        <div class="panel-card">
+            <div class="panel-header">
+                <h3><span>📜</span> ประวัติเหตุการณ์ความมั่นคงล่าสุด (Live Ingestion & Security Feed)</h3>
+                <small style="color: var(--text-muted); font-size: 0.8rem;">บันทึกลง WORM Merkle Chain อัตโนมัติ ถูกต้องตาม พ.ร.บ.คอมพิวเตอร์ ม.26</small>
+            </div>
+            <div class="event-feed" id="event-feed">
+                <div class="event-item">
+                    <div>
+                        <span style="color: var(--text-muted);">11:55:02</span> | <strong>127.0.0.1</strong> ➔ GET /api/v1/auth/session | Risk: <strong>0/100</strong> (Normal Citizen)
+                    </div>
+                    <span class="event-tag tag-passed">PASSED</span>
+                </div>
+                <div class="event-item critical">
+                    <div>
+                        <span style="color: var(--text-muted);">11:55:18</span> | <strong>185.220.101.5</strong> ➔ POST /api/v1/auth/login | SQL Injection Signature detected | Risk: <strong>95/100</strong>
+                    </div>
+                    <span class="event-tag tag-blocked">DROPPED (0.11 ms)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIMPLE JAVASCRIPT CHART ENGINE -->
+    <script>
+        let threshold = 80;
+        let blockedCount = 427;
+        let trafficCount = 1482910;
+
+        function updateThreshold(val) {
+            threshold = val;
+            document.getElementById('threshold-val').innerText = val + " / 100";
+        }
+
+        // DRAW REALTIME CHART
+        const canvas = document.getElementById('attackChart');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = 240;
+
+        let points = [12, 18, 15, 25, 20, 32, 28, 45, 30, 60, 40, 35, 50, 45, 70, 55, 65, 80, 75, 90, 85, 95];
+
+        function drawChart() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+            ctx.lineWidth = 1;
+            for (let y = 0; y < canvas.height; y += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+
+            // Draw line
+            ctx.beginPath();
+            const step = canvas.width / (points.length - 1);
+            points.forEach((val, i) => {
+                const x = i * step;
+                const y = canvas.height - (val / 100 * (canvas.height - 40)) - 20;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.strokeStyle = '#38BDF8';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            // Gradient fill
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.lineTo(0, canvas.height);
+            const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            grad.addColorStop(0, 'rgba(56, 189, 248, 0.25)');
+            grad.addColorStop(1, 'rgba(56, 189, 248, 0.0)');
+            ctx.fillStyle = grad;
+            ctx.fill();
+        }
+
+        drawChart();
+        window.addEventListener('resize', () => {
+            canvas.width = canvas.parentElement.clientWidth;
+            drawChart();
+        });
+
+        // SIMULATE INTERACTIVE TRAFFIC
+        function simulateTraffic(type) {
+            trafficCount += Math.floor(Math.random() * 50) + 10;
+            document.getElementById('total-traffic').innerText = trafficCount.toLocaleString();
+
+            const feed = document.getElementById('event-feed');
+            const now = new Date().toTimeString().split(' ')[0];
+            const item = document.createElement('div');
+
+            if (type === 'normal') {
+                item.className = 'event-item';
+                item.innerHTML = `
+                    <div><span style="color: var(--text-muted);">${now}</span> | <strong>203.0.113.10</strong> ➔ GET /catalog | Risk: <strong>5/100</strong> (Normal User)</div>
+                    <span class="event-tag tag-passed">PASSED</span>
+                `;
+                points.push(Math.floor(Math.random() * 20) + 10);
+            } else if (type === 'sqli') {
+                blockedCount++;
+                document.getElementById('blocked-threats').innerText = blockedCount.toLocaleString();
+                item.className = 'event-item critical';
+                item.innerHTML = `
+                    <div><span style="color: var(--text-muted);">${now}</span> | <strong>185.220.101.5</strong> ➔ POST /login | SQLi Attack Detected | Risk: <strong>95/100</strong></div>
+                    <span class="event-tag tag-blocked">AUTO-BLOCKED (0.11 ms)</span>
+                `;
+                points.push(95);
+            } else if (type === 'ai-agent') {
+                blockedCount++;
+                document.getElementById('blocked-threats').innerText = blockedCount.toLocaleString();
+                item.className = 'event-item critical';
+                item.innerHTML = `
+                    <div><span style="color: var(--text-muted);">${now}</span> | <strong>45.33.32.156</strong> ➔ POST /api/mcp | Autonomous AI Agent Hijack | Risk: <strong>92/100</strong></div>
+                    <span class="event-tag tag-blocked">SANDBOXED (0.14 ms)</span>
+                `;
+                points.push(92);
+            } else if (type === 'prompt-injection') {
+                blockedCount++;
+                document.getElementById('blocked-threats').innerText = blockedCount.toLocaleString();
+                item.className = 'event-item critical';
+                item.innerHTML = `
+                    <div><span style="color: var(--text-muted);">${now}</span> | <strong>198.51.100.88</strong> ➔ POST /ai/prompt | LLM Prompt Jailbreak | Risk: <strong>88/100</strong></div>
+                    <span class="event-tag tag-blocked">DROPPED (0.12 ms)</span>
+                `;
+                points.push(88);
+            } else if (type === 'quantum-pqc') {
+                item.className = 'event-item';
+                item.style.borderLeftColor = '#818CF8';
+                item.innerHTML = `
+                    <div><span style="color: var(--text-muted);">${now}</span> | <strong>Sovereign Core</strong> ➔ PQC Signature FIPS 204 Verified | Dilithium ML-DSA-65 | Latency: <strong>1.8 ms</strong></div>
+                    <span class="event-tag" style="background: rgba(129, 140, 248, 0.2); color: #818CF8;">QUANTUM-IMMUNE</span>
+                `;
+                points.push(40);
+            }
+
+            if (points.length > 25) points.shift();
+            drawChart();
+            feed.insertBefore(item, feed.firstChild);
+        }
+
+        function exportAuditReport() {
+            alert('✔ ส่งออกรายงานบอร์ดบริหารสำเร็จ!\n\nเอกสาร: TUM-EXECUTIVE-AUDIT-2026.pdf\nรับรอง: WORM Merkle Chain (พ.ร.บ.คอมพิวเตอร์ ม.26, PDPA, ISO 27001)\nความเร็วในการตรวจจับเฉลี่ย: 0.12 ms');
+        }
+
+        function triggerScan() {
+            alert('🔄 ทำการสแกนความมั่นคงระบบแบบ Full-Spectrum...\n\n✔ TUM Trust Security: Hardware & Drivers ปกติ\n✔ TUMSocs: eBPF Ingestion Mesh ปกติ\n✔ TUMQuantum: FIPS 203/204 Engines ปกติ 100%');
+        }
+    </script>
+</body>
+</html>

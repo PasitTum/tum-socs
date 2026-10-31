@@ -41,6 +41,16 @@ namespace Tum.Trust.Security.Core.Models.Logging
         /// <summary>
         /// High-speed gRPC or HTTP/2 TUMLog Collector node.
         /// </summary>
-        GrpcCollector = 7
+        GrpcCollector = 7,
+
+        /// <summary>
+        /// Enterprise ClickHouse Columnar OLAP database for large-scale SIEM telemetry.
+        /// </summary>
+        ClickHouseColumnar = 8,
+
+        /// <summary>
+        /// Embedded DuckDB Columnar database for edge nodes, local analytics, or single-instance SIEM.
+        /// </summary>
+        DuckDbEmbedded = 9
     }
 }

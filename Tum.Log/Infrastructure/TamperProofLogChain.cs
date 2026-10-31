@@ -11,12 +11,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tum.Trust.Security.Core.Interfaces.Logging;
 using Tum.Trust.Security.Core.Models.Logging;
+using Tum.Trust.Security.Infrastructure.Serialization;
 
 namespace Tum.Trust.Security.Infrastructure.Logging
 {
     /// <summary>
     /// Thread-safe storage engine providing immutable SHA-256 Merkle chained persistence,
     /// enforcing 90-day WORM retention under Thai Computer Crime Act B.E. 2560 Section 26.
+    /// Fully optimized for .NET 8/10 Native AOT via source-generated JSON serialization.
     /// </summary>
     public class TamperProofLogChain : ITamperProofLogStorage
     {
@@ -167,7 +169,7 @@ namespace Tum.Trust.Security.Infrastructure.Logging
                     }
                 }
 
-                var bundle = new
+                var bundle = new TumAuditExportBundle
                 {
                     AuditCertification = "TUM-TRUST-SECURITY-COMPLIANCE-CCA2560-SEC26",
                     ComplianceStandard = "Thai Computer Crime Act B.E. 2560 Section 26 & PDPA B.E. 2562",
@@ -180,7 +182,7 @@ namespace Tum.Trust.Security.Infrastructure.Logging
                     Entries = filtered
                 };
 
-                return JsonSerializer.Serialize(bundle, new JsonSerializerOptions { WriteIndented = true });
+                return JsonSerializer.Serialize(bundle, TumLogIndentedJsonSerializerContext.Default.TumAuditExportBundle);
             }
             finally
             {
@@ -225,7 +227,7 @@ namespace Tum.Trust.Security.Infrastructure.Logging
             {
                 EnsureStorageDirectoryExists();
                 string dateFile = Path.Combine(_options.StorageDirectory, $"tumlog_{DateTime.UtcNow:yyyyMMdd}.jsonl");
-                string jsonLine = JsonSerializer.Serialize(entry) + Environment.NewLine;
+                string jsonLine = JsonSerializer.Serialize(entry, TumLogJsonSerializerContext.Default.TumLogEntry) + Environment.NewLine;
 #if NET5_0
                 byte[] bytes = Encoding.UTF8.GetBytes(jsonLine);
                 using (var fs = new FileStream(dateFile, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
