@@ -4,7 +4,9 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Tum.Trust.Security.Core.Models.Alerts;
+using Tum.Trust.Security.Core.Models.Dashboard;
 using Tum.Trust.Security.Core.Models.Logging;
+using Tum.Trust.Security.Core.Models.Query;
 using Tum.Trust.Security.Core.Models.Risk;
 using Tum.Trust.Security.Core.Models.Sigma;
 
@@ -32,6 +34,13 @@ namespace Tum.Trust.Security.Infrastructure.Serialization
     [JsonSerializable(typeof(DiscordWebhookPayload))]
     [JsonSerializable(typeof(SlackWebhookPayload))]
     [JsonSerializable(typeof(GenericAlertWebhookPayload))]
+    [JsonSerializable(typeof(EventQueryRequest))]
+    [JsonSerializable(typeof(EventQueryResult))]
+    [JsonSerializable(typeof(AttackGraphData))]
+    [JsonSerializable(typeof(AttackGraphNode))]
+    [JsonSerializable(typeof(AttackGraphEdge))]
+    [JsonSerializable(typeof(ThreatDashboardSummary))]
+    [JsonSerializable(typeof(ComplianceAuditSummary))]
     public partial class TumLogJsonSerializerContext : JsonSerializerContext
     {
     }
@@ -46,6 +55,7 @@ namespace Tum.Trust.Security.Infrastructure.Serialization
     [JsonSerializable(typeof(TumAuditExportBundle))]
     [JsonSerializable(typeof(TumLogEntry))]
     [JsonSerializable(typeof(List<TumLogEntry>))]
+    [JsonSerializable(typeof(ComplianceAuditSummary))]
     public partial class TumLogIndentedJsonSerializerContext : JsonSerializerContext
     {
     }

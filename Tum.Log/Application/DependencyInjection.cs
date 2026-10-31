@@ -57,6 +57,8 @@ namespace Tum.Log
             services.TryAddSingleton<ISigmaRuleEngine, SigmaRuleEngine>();
             services.TryAddSingleton<IDynamicRiskEngine, DynamicRiskEngine>();
             services.TryAddSingleton<IAlertDispatcher, AlertDispatcher>();
+            services.TryAddSingleton<Tum.Log.Core.Models.Ebpf.EbpfSnifferOptions>();
+            services.TryAddSingleton<Tum.Log.Core.Interfaces.IEbpfPacketSniffer, Tum.Log.Infrastructure.Ebpf.EbpfPacketSniffer>();
 
             services.TryAddSingleton<ITumRingBufferIngestor>(sp =>
             {
