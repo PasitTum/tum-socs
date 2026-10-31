@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tum.Log", "Tum.Log\Tum.Log.csproj", "{BD9D8512-ACE1-4559-8C1B-146BDD2927A7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{44B4B63F-4ABE-4645-B2CA-98E68175A867}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tum.Log.Tests", "tests\Tum.Log.Tests\Tum.Log.Tests.csproj", "{4E65C26A-9482-47A2-A841-3EA708547C8C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,12 @@ Global
 		{BD9D8512-ACE1-4559-8C1B-146BDD2927A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD9D8512-ACE1-4559-8C1B-146BDD2927A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD9D8512-ACE1-4559-8C1B-146BDD2927A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E65C26A-9482-47A2-A841-3EA708547C8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E65C26A-9482-47A2-A841-3EA708547C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E65C26A-9482-47A2-A841-3EA708547C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E65C26A-9482-47A2-A841-3EA708547C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4E65C26A-9482-47A2-A841-3EA708547C8C} = {44B4B63F-4ABE-4645-B2CA-98E68175A867}
 	EndGlobalSection
 EndGlobal

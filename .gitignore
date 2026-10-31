@@ -1,7 +1,19 @@
-bin/
-obj/
+# Build output
+**/[Bb]in/
+**/[Oo]bj/
 *.user
 *.suo
 .vs/
 .idea/
+
+# Application logs (files ending in .log)
+logs/
 *.log
+!Tum.Log/
+!Tum.Socs/
+
+# Re-ignore build artifacts under unignored directories
+Tum.Log/[Bb]in/
+Tum.Log/[Oo]bj/
+Tum.Socs/[Bb]in/
+Tum.Socs/[Oo]bj/
