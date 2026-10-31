@@ -3,7 +3,10 @@
 
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Tum.Trust.Security.Core.Models.Alerts;
 using Tum.Trust.Security.Core.Models.Logging;
+using Tum.Trust.Security.Core.Models.Risk;
+using Tum.Trust.Security.Core.Models.Sigma;
 
 namespace Tum.Trust.Security.Infrastructure.Serialization
 {
@@ -22,6 +25,13 @@ namespace Tum.Trust.Security.Infrastructure.Serialization
     [JsonSerializable(typeof(PiiDetectionResult))]
     [JsonSerializable(typeof(SecurityThreatAlert))]
     [JsonSerializable(typeof(OutboundLeakDetection))]
+    [JsonSerializable(typeof(SigmaMatchResult))]
+    [JsonSerializable(typeof(List<SigmaMatchResult>))]
+    [JsonSerializable(typeof(RiskScoreResult))]
+    [JsonSerializable(typeof(AlertNotification))]
+    [JsonSerializable(typeof(DiscordWebhookPayload))]
+    [JsonSerializable(typeof(SlackWebhookPayload))]
+    [JsonSerializable(typeof(GenericAlertWebhookPayload))]
     public partial class TumLogJsonSerializerContext : JsonSerializerContext
     {
     }
