@@ -1,0 +1,21 @@
+title: Ransomware Canary File Tampering
+id: e5f6a7b8-c9d0-1234-efab-345678901234
+status: stable
+description: Detects unauthorized modification or encryption attempts targeting canary tripwire deception files
+level: critical
+tags:
+    - attack.impact
+    - attack.t1486
+logsource:
+    category: file_event
+    product: tumlog
+detection:
+    selection:
+        EventName: 'CANARY.TAMPER'
+        PayloadSanitized|contains:
+            - '.locked'
+            - '.encrypted'
+            - 'DECRYPT_INSTRUCTIONS'
+    condition: selection
+falsepositives:
+    - None (Canary files have no legitimate business access)

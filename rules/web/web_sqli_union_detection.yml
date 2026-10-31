@@ -1,0 +1,21 @@
+title: Web SQL Injection UNION SELECT Technique
+id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+status: stable
+description: Detects SQL injection attempts leveraging UNION SELECT syntax to extract unauthorized database records
+level: critical
+tags:
+    - attack.initial_access
+    - attack.t1190
+logsource:
+    category: webserver
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'UNION SELECT'
+            - 'UNION ALL SELECT'
+            - 'OR 1=1'
+            - 'WAITFOR DELAY'
+    condition: selection
+falsepositives:
+    - Internal security pentesting with prior authorization

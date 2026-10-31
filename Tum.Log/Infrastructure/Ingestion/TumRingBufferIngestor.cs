@@ -137,7 +137,7 @@ namespace Tum.Trust.Security.Infrastructure.Ingestion
         public async Task FlushAsync(CancellationToken cancellationToken = default)
         {
             var spinWait = new SpinWait();
-            while (_channel.Reader.Count > 0 && !cancellationToken.IsCancellationRequested)
+            while ((_channel.Reader.Count > 0 || (!_options.DropOnOverflow && Interlocked.Read(ref _totalProcessed) < Interlocked.Read(ref _totalEnqueued))) && !cancellationToken.IsCancellationRequested)
             {
                 spinWait.SpinOnce();
                 if (spinWait.NextSpinWillYield)

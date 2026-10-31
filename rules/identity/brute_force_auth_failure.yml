@@ -1,0 +1,21 @@
+title: High Frequency Authentication Failure
+id: f6a7b8c9-d0e1-2345-fabc-456789012345
+status: stable
+description: Detects rapid repeated credential stuffing or brute force authentication failures
+level: high
+tags:
+    - attack.credential_access
+    - attack.t1110.001
+logsource:
+    category: authentication
+    product: tumlog
+detection:
+    selection:
+        EventName: 'AUTH.FAILED'
+        PayloadSanitized|contains:
+            - 'invalid_credentials'
+            - 'password_mismatch'
+            - 'account_locked'
+    condition: selection
+falsepositives:
+    - User forgotten password attempts

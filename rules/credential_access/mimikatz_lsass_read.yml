@@ -1,0 +1,21 @@
+title: LSASS Memory Dump and Mimikatz Invocation
+id: d4e5f6a7-b8c9-0123-defa-234567890123
+status: stable
+description: Detects process memory dumping or credential extraction attempts targeting lsass.exe
+level: critical
+tags:
+    - attack.credential_access
+    - attack.t1003.001
+logsource:
+    category: process_access
+    product: windows
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'sekurlsa::logonpasswords'
+            - 'lsass.dmp'
+            - 'procdump -ma lsass.exe'
+            - 'comsvcs.dll, MiniDump'
+    condition: selection
+falsepositives:
+    - Kernel memory diagnostics executed by authorized administrators

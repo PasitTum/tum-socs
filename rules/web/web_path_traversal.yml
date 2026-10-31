@@ -1,0 +1,22 @@
+title: Web Directory and Path Traversal Probe
+id: b2c3d4e5-f6a7-8901-bcde-f12345678901
+status: stable
+description: Detects directory traversal patterns probing sensitive UNIX or Windows configuration files
+level: high
+tags:
+    - attack.discovery
+    - attack.t1083
+logsource:
+    category: webserver
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - '/etc/passwd'
+            - '/etc/shadow'
+            - '..\..\windows\system32'
+            - '..\..\windows\win.ini'
+            - '%2e%2e%2f'
+    condition: selection
+falsepositives:
+    - Legitimate path queries in specialized file management tools

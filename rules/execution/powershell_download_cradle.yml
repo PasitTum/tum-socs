@@ -1,0 +1,22 @@
+title: Suspicious PowerShell Remote Download Cradle
+id: c3d4e5f6-a7b8-9012-cdef-123456789012
+status: stable
+description: Detects PowerShell command line patterns invoking WebClient DownloadString or Invoke-WebRequest
+level: critical
+tags:
+    - attack.execution
+    - attack.t1059.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'DownloadString('
+            - 'Net.WebClient).DownloadFile('
+            - 'IEX (New-Object'
+            - 'Invoke-Expression (New-Object'
+            - 'curl -s https://'
+    condition: selection
+falsepositives:
+    - Authorized deployment scripts managed by verified IT service accounts

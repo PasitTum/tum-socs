@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{44B4B63F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tum.Log.Tests", "tests\Tum.Log.Tests\Tum.Log.Tests.csproj", "{4E65C26A-9482-47A2-A841-3EA708547C8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tum.Siem.Server", "Tum.Siem.Server\Tum.Siem.Server.csproj", "{EC8A788B-7BA9-441E-8D56-D4FACD1D73B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{4E65C26A-9482-47A2-A841-3EA708547C8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E65C26A-9482-47A2-A841-3EA708547C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E65C26A-9482-47A2-A841-3EA708547C8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC8A788B-7BA9-441E-8D56-D4FACD1D73B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC8A788B-7BA9-441E-8D56-D4FACD1D73B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC8A788B-7BA9-441E-8D56-D4FACD1D73B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC8A788B-7BA9-441E-8D56-D4FACD1D73B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4E65C26A-9482-47A2-A841-3EA708547C8C} = {44B4B63F-4ABE-4645-B2CA-98E68175A867}
