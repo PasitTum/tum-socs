@@ -14,12 +14,14 @@ namespace Tum.Trust.Security.Infrastructure.Logging
 {
     /// <summary>
     /// Multi-destination sink dispatcher managing asynchronous log delivery to Local WORM storage,
-    /// RFC 5424 Syslog servers, OpenSearch/Elasticsearch clusters, and S3 Object Lock buckets.
+    /// RFC 5424 Syslog servers, OpenSearch/Elasticsearch clusters, S3 Object Lock buckets,
+    /// and Columnar Storage engines (ClickHouse, DuckDB).
     /// </summary>
     public class LogSinkDispatcher : ILogSinkDispatcher
     {
         private readonly TumLogOptions _options;
         private readonly ITamperProofLogStorage _storage;
+        private readonly Dictionary<StorageSinkType, IColumnarSinkAdapter> _columnarAdapters = new();
         private readonly ILogger<LogSinkDispatcher> _logger;
 
         /// <summary>
@@ -27,15 +29,35 @@ namespace Tum.Trust.Security.Infrastructure.Logging
         /// </summary>
         /// <param name="options">Options instance.</param>
         /// <param name="storage">Tamper-proof storage instance.</param>
+        /// <param name="columnarAdapters">Optional columnar storage adapters.</param>
         /// <param name="logger">Optional logger instance.</param>
         public LogSinkDispatcher(
             TumLogOptions? options = null,
             ITamperProofLogStorage? storage = null,
+            IEnumerable<IColumnarSinkAdapter>? columnarAdapters = null,
             ILogger<LogSinkDispatcher>? logger = null)
         {
             _options = options ?? new TumLogOptions();
             _storage = storage ?? new TamperProofLogChain(_options);
             _logger = logger ?? NullLogger<LogSinkDispatcher>.Instance;
+
+            if (columnarAdapters != null)
+            {
+                foreach (var adapter in columnarAdapters)
+                {
+                    _columnarAdapters[adapter.SinkType] = adapter;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Registers or updates a columnar storage adapter (ClickHouse or DuckDB).
+        /// </summary>
+        /// <param name="adapter">The columnar adapter.</param>
+        public void RegisterColumnarAdapter(IColumnarSinkAdapter adapter)
+        {
+            if (adapter == null) throw new ArgumentNullException(nameof(adapter));
+            _columnarAdapters[adapter.SinkType] = adapter;
         }
 
         /// <inheritdoc />
@@ -71,6 +93,15 @@ namespace Tum.Trust.Security.Infrastructure.Logging
                             // Format RFC 5424 Syslog Header: <PRI>VERSION TIMESTAMP HOSTNAME APP-NAME PROCID MSGID [SD-ID] MSG
                             string syslogMsg = $"<134>1 {entry.TimestampUtc:O} {Environment.MachineName} {entry.ApplicationName} 1 {entry.StandardAction} [tumlog@2026 correlationId=\"{entry.CorrelationId}\" category=\"{entry.Category}\" clientIp=\"{entry.ClientIp}\"] {entry.PayloadSanitized}";
                             successfulSinks.Add(StorageSinkType.SyslogRfc5424);
+                            break;
+
+                        case StorageSinkType.ClickHouseColumnar:
+                        case StorageSinkType.DuckDbEmbedded:
+                            if (_columnarAdapters.TryGetValue(dest.SinkType, out var adapter) && adapter.IsEnabled)
+                            {
+                                await adapter.IngestBatchAsync(new[] { entry }, cancellationToken).ConfigureAwait(false);
+                            }
+                            successfulSinks.Add(dest.SinkType);
                             break;
 
                         case StorageSinkType.ElasticsearchOpenSearch:

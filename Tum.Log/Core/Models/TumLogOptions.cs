@@ -1,6 +1,8 @@
 // Copyright (c) 2026 TUM Trust Security. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using System.Collections.Generic;
+
 namespace Tum.Trust.Security.Core.Models.Logging
 {
     /// <summary>
@@ -80,12 +82,42 @@ namespace Tum.Trust.Security.Core.Models.Logging
         public bool TrackEndpointProfiles { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets the list of configured destination sinks (Local WORM, Syslog RFC 5424, OpenSearch, S3).
+        /// Gets or sets the list of configured destination sinks (Local WORM, Syslog RFC 5424, OpenSearch, S3, ClickHouse, DuckDB).
         /// </summary>
-        public System.Collections.Generic.List<LogDestinationConfig> Destinations { get; set; } =
-            new System.Collections.Generic.List<LogDestinationConfig>
+        public List<LogDestinationConfig> Destinations { get; set; } =
+            new List<LogDestinationConfig>
             {
                 new LogDestinationConfig { SinkType = StorageSinkType.LocalWormFile, IsEnabled = true }
             };
+
+        /// <summary>
+        /// Adds ClickHouse columnar storage destination sink.
+        /// </summary>
+        public TumLogOptions AddClickHouseSink(string endpointUri = "http://localhost:8123", string database = "tum_siem", string table = "tum_security_logs")
+        {
+            Destinations.Add(new LogDestinationConfig
+            {
+                SinkType = StorageSinkType.ClickHouseColumnar,
+                EndpointUri = endpointUri,
+                TargetName = $"{database}.{table}",
+                IsEnabled = true
+            });
+            return this;
+        }
+
+        /// <summary>
+        /// Adds embedded DuckDB columnar storage destination sink.
+        /// </summary>
+        public TumLogOptions AddDuckDbSink(string databasePath = "tum_siem_edge.duckdb", string table = "tum_security_logs")
+        {
+            Destinations.Add(new LogDestinationConfig
+            {
+                SinkType = StorageSinkType.DuckDbEmbedded,
+                EndpointUri = databasePath,
+                TargetName = table,
+                IsEnabled = true
+            });
+            return this;
+        }
     }
 }
