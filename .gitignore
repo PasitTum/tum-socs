@@ -6,6 +6,14 @@
 .vs/
 .idea/
 
+# Node / Frontend
+**/node_modules/
+**/dist/
+**/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # Application logs (files ending in .log)
 logs/
 *.log
@@ -17,3 +25,4 @@ Tum.Log/[Bb]in/
 Tum.Log/[Oo]bj/
 Tum.Socs/[Bb]in/
 Tum.Socs/[Oo]bj/
+tum_logs/

@@ -1,0 +1,42 @@
+{
+  "name": "TUM-OpenSIEM Sovereign SOC Console",
+  "short_name": "TUM-OpenSIEM",
+  "description": "Enterprise Sovereign SIEM, Threat Radar & Forensic Compliance Console",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#030712",
+  "orientation": "any",
+  "categories": ["security", "utilities", "business"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Threat Radar",
+      "short_name": "Radar",
+      "description": "View live threat posture and dynamic risk",
+      "url": "/?tab=radar",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Forensic Explorer",
+      "short_name": "Search",
+      "description": "Search immutable WORM audit logs",
+      "url": "/?tab=explorer",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "CCA Sec 26 Audit",
+      "short_name": "Compliance",
+      "description": "Generate legal compliance audit evidence",
+      "url": "/?tab=compliance",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+    }
+  ]
+}

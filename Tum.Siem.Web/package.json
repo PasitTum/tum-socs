@@ -1,0 +1,63 @@
+{
+  "name": "tum-siem-web",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview",
+    "desktop:dev": "electron electron/main.cjs",
+    "desktop:pack": "npm run build && electron-builder --dir",
+    "desktop:build:win": "npm run build && electron-builder --win portable --x64",
+    "desktop:build:linux": "npm run build && electron-builder --linux AppImage",
+    "desktop:build:mac": "npm run build && electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.tum.siem.console",
+    "productName": "TUM-OpenSIEM",
+    "directories": {
+      "output": "../dist/desktop"
+    },
+    "files": [
+      "electron/**/*",
+      "../Tum.Siem.Server/wwwroot/**/*"
+    ],
+    "win": {
+      "target": "portable",
+      "icon": "public/favicon.svg"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "public/favicon.svg",
+      "category": "Security"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "public/favicon.svg",
+      "category": "public.app-category.security"
+    }
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.66.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "electron": "^45.2.1",
+    "electron-builder": "^26.18.0",
+    "oxlint": "^1.89.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.5"
+  }
+}

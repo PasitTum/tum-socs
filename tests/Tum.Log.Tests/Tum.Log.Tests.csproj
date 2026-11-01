@@ -52,6 +52,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Tum.Log\Tum.Log.csproj" />
+    <ProjectReference Include="..\..\Tum.Siem.Server\Tum.Siem.Server.csproj" />
   </ItemGroup>
 
 </Project>
