@@ -1,0 +1,33 @@
+name: TUM OpenSIEM Core CI/CD
+
+on:
+  push:
+    branches: [ main, develop, 'feature/**', 'release/**' ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    name: Build & Test (.NET 8.0 LTS)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore Dependencies
+        run: dotnet restore Tum.Socs.sln
+
+      - name: Build Solution (Release Mode)
+        run: dotnet build Tum.Socs.sln -c Release --no-restore
+
+      - name: Execute Automated Unit & Regression Tests
+        run: dotnet test Tum.Socs.sln -c Release --no-build --verbosity normal
+
+      - name: Publish OpenSIEM Server Artifacts
+        run: dotnet publish Tum.Siem.Server/Tum.Siem.Server.csproj -c Release --no-build -o artifacts/server
