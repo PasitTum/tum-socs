@@ -45,6 +45,7 @@ public static class ServiceCollectionExtensions
         // 4. Server-level Domain Services
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<ISigmaRuleLoaderService, SigmaRuleLoaderService>();
+        services.AddSingleton<IDigitalReceiptService, DigitalReceiptService>();
         services.AddScoped<IEventIngestionPipeline, EventIngestionPipeline>();
         services.AddScoped<IDatasetIngestionService, DatasetIngestionService>();
 
