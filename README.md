@@ -140,6 +140,11 @@ status:500 NOT user:system
 | `/api/sigma/rules` | `GET` | ตรวจสอบรายการกฎ Sigma ที่โหลดอยู่ในหน่วยความจำ |
 | `/api/sigma/rules` | `POST` | ส่งกฎ Sigma YAML ใหม่เข้าสู่ระบบเพื่อคอมไพล์แบบ Hot-Reload |
 | `/api/events/live` | `GET` | สตรีมรายการเหตุการณ์ล่าสุด 30 รายการ |
+| `/api/ebpf/files/status` | `GET` | ตรวจสอบสถานะ eBPF Kernel File System Hook, จำนวน Event และ Baseline ไบนารี |
+| `/api/ebpf/files/event` | `POST` | นำเข้า Raw eBPF Tracepoint Event (Write, UnlinkAt, Chmod, RenameAt) |
+| `/api/ebpf/files/tampering-alerts` | `GET` | ดึงรายการแจ้งเตือนการดัดแปลงไบนารีระบบและ Anti-Forensics Log Wipe ล่าสุด |
+| `/api/ebpf/files/baseline` | `POST` | ลงทะเบียนและอัปเดต Cryptographic SHA-256 Baseline สำหรับไบนารีสำคัญ |
+| `/api/ebpf/files/simulate-tampering` | `POST` | จำลองการบุกรุกดัดแปลงไบนารีหรือการลบ WORM Ledger เพื่อทดสอบการตรวจจับ |
 
 ---
 

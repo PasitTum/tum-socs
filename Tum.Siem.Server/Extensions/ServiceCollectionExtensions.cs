@@ -46,6 +46,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<ISigmaRuleLoaderService, SigmaRuleLoaderService>();
         services.AddSingleton<IDigitalReceiptService, DigitalReceiptService>();
+        services.AddSingleton<IEbpfFileTracingService, EbpfFileTracingService>();
         services.AddScoped<IEventIngestionPipeline, EventIngestionPipeline>();
         services.AddScoped<IDatasetIngestionService, DatasetIngestionService>();
 
