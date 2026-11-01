@@ -59,6 +59,8 @@ namespace Tum.Log
             services.TryAddSingleton<IAlertDispatcher, AlertDispatcher>();
             services.TryAddSingleton<Tum.Log.Core.Models.Ebpf.EbpfSnifferOptions>();
             services.TryAddSingleton<Tum.Log.Core.Interfaces.IEbpfPacketSniffer, Tum.Log.Infrastructure.Ebpf.EbpfPacketSniffer>();
+            services.TryAddSingleton<Tum.Log.Core.Models.Ebpf.EbpfFileHookOptions>();
+            services.TryAddSingleton<Tum.Log.Core.Interfaces.IEbpfFileHookMonitor, Tum.Log.Infrastructure.Ebpf.EbpfFileHookMonitor>();
 
             services.TryAddSingleton<ITumRingBufferIngestor>(sp =>
             {
