@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks Condition="'$(NET10_SDK)' == 'true'">net8.0;net10.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(TargetFrameworks)' == ''">net8.0</TargetFrameworks>
+    <TargetFramework Condition="'$(NET10_SDK)' != 'true'">net8.0</TargetFramework>
     <IsAotCompatible>true</IsAotCompatible>
     <RootNamespace>Tum.Log</RootNamespace>
     <AssemblyName>Tum.Log</AssemblyName>
