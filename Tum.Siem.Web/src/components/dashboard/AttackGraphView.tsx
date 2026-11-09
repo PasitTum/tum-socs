@@ -2,7 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 import React, { useState } from 'react';
-import { Network, RotateCcw, ShieldAlert, Crosshair, ShieldCheck, Terminal, X } from 'lucide-react';
+import { Network, RotateCcw, Crosshair, ShieldCheck, Terminal, X } from 'lucide-react';
 import type { AttackGraphData, AttackGraphNode } from '../../types/siem';
 import { translations, type Language } from '../../i18n/translations';
 
@@ -61,25 +61,25 @@ export const AttackGraphView: React.FC<AttackGraphViewProps> = ({ data, onRefres
   };
 
   const getNodeColor = (type: string, risk: string) => {
-    if (risk === 'Critical' || type === 'AttackerIp') return '#F43F5E';
-    if (type === 'MitreTechnique') return '#F59E0B';
-    if (type === 'TargetAsset') return '#38BDF8';
-    return '#10B981';
+    if (risk === 'Critical' || type === 'AttackerIp') return '#f85149';
+    if (type === 'MitreTechnique') return '#d29922';
+    if (type === 'TargetAsset') return '#58a6ff';
+    return '#2ea043';
   };
 
   return (
-    <div className="bg-[#0b101e]/80 border border-white/10 rounded-2xl p-5 backdrop-blur-xl flex flex-col h-[530px] relative overflow-hidden shadow-2xl">
+    <div className="bg-[#161b22] border border-[#21262d] rounded p-4 flex flex-col h-[500px] relative">
       {/* Header bar */}
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/5">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-            <Network className="w-4 h-4" />
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#21262d]">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded bg-[#21262d] flex items-center justify-center text-[#58a6ff]">
+            <Network className="w-3.5 h-3.5" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+            <h3 className="text-xs font-semibold text-[#f0f6fc] uppercase tracking-wider font-mono">
               {t.graphTitle}
             </h3>
-            <p className="text-[10px] text-slate-500 font-mono">
+            <p className="text-[10px] text-[#8b949e] font-mono">
               GRAPH-NEURAL CORRELATION // LIVE ATTACK TRAJECTORIES
             </p>
           </div>
@@ -89,9 +89,9 @@ export const AttackGraphView: React.FC<AttackGraphViewProps> = ({ data, onRefres
             <button
               type="button"
               onClick={onRefresh}
-              className="px-3 py-1.5 rounded-xl bg-slate-900/90 text-slate-300 hover:text-white border border-white/10 text-xs font-mono flex items-center gap-1.5 cursor-pointer hover:border-cyan-500/40 transition-all"
+              className="px-2.5 py-1 rounded bg-[#21262d] text-[#c9d1d9] hover:text-white border border-[#30363d] text-xs font-mono flex items-center gap-1.5 cursor-pointer transition-colors"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-cyan-400" />
+              <RotateCcw className="w-3 h-3 text-[#58a6ff]" />
               <span>{lang === 'th' ? 'รีเฟรชกราฟ' : 'Refresh'}</span>
             </button>
           )}
@@ -99,38 +99,34 @@ export const AttackGraphView: React.FC<AttackGraphViewProps> = ({ data, onRefres
       </div>
 
       {/* SVG Canvas Map */}
-      <div className="flex-grow relative overflow-hidden bg-[#060a14] rounded-xl border border-white/5 cyber-grid">
-        {/* Background Radar Rings */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-cyan-500/10 rounded-full pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-indigo-500/10 rounded-full pointer-events-none" />
-
-        <svg className="w-full h-full min-h-[420px]" viewBox="0 0 780 420" preserveAspectRatio="xMidYMid meet">
+      <div className="flex-grow relative overflow-hidden bg-[#0d1117] rounded border border-[#21262d]">
+        <svg className="w-full h-full min-h-[400px]" viewBox="0 0 780 420" preserveAspectRatio="xMidYMid meet">
           <defs>
             <marker
               id="arrow-crit"
               viewBox="0 0 10 10"
               refX="22"
               refY="5"
-              markerWidth="6"
-              markerHeight="6"
+              markerWidth="5"
+              markerHeight="5"
               orient="auto-start-reverse"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#F43F5E" />
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#f85149" />
             </marker>
             <marker
               id="arrow-norm"
               viewBox="0 0 10 10"
               refX="22"
               refY="5"
-              markerWidth="6"
-              markerHeight="6"
+              markerWidth="5"
+              markerHeight="5"
               orient="auto-start-reverse"
             >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#818CF8" />
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#30363d" />
             </marker>
           </defs>
 
-          {/* Render Vector Edges with Particle Simulation */}
+          {/* Render Vector Edges */}
           {edges.map((edge, idx) => {
             const sIdx = nodes.findIndex((n) => n.id === edge.source);
             const tIdx = nodes.findIndex((n) => n.id === edge.target);
@@ -146,26 +142,26 @@ export const AttackGraphView: React.FC<AttackGraphViewProps> = ({ data, onRefres
                   y1={sourcePos.y}
                   x2={targetPos.x}
                   y2={targetPos.y}
-                  stroke={isCrit ? '#F43F5E' : '#818CF8'}
-                  strokeWidth={isCrit ? '2' : '1.5'}
-                  strokeOpacity="0.7"
+                  stroke={isCrit ? '#f85149' : '#30363d'}
+                  strokeWidth={isCrit ? '1.5' : '1'}
+                  strokeOpacity={isCrit ? '0.8' : '0.6'}
                   markerEnd={isCrit ? 'url(#arrow-crit)' : 'url(#arrow-norm)'}
                 />
 
-                {/* Animated Packet Particle traveling along the edge */}
-                <circle r={isCrit ? '3' : '2'} fill={isCrit ? '#FDA4AF' : '#A5B4FC'}>
+                {/* Packet Particle */}
+                <circle r={isCrit ? '2.5' : '2'} fill={isCrit ? '#f85149' : '#58a6ff'}>
                   <animate
                     attributeName="cx"
                     from={sourcePos.x}
                     to={targetPos.x}
-                    dur={`${2 + (idx % 3)}s`}
+                    dur={`${2.5 + (idx % 2)}s`}
                     repeatCount="indefinite"
                   />
                   <animate
                     attributeName="cy"
                     from={sourcePos.y}
                     to={targetPos.y}
-                    dur={`${2 + (idx % 3)}s`}
+                    dur={`${2.5 + (idx % 2)}s`}
                     repeatCount="indefinite"
                   />
                 </circle>
@@ -173,9 +169,9 @@ export const AttackGraphView: React.FC<AttackGraphViewProps> = ({ data, onRefres
                 {/* Edge Relation Label */}
                 <text
                   x={(sourcePos.x + targetPos.x) / 2}
-                  y={(sourcePos.y + targetPos.y) / 2 - 8}
-                  fill={isCrit ? '#FDA4AF' : '#94A3B8'}
-                  fontSize="9"
+                  y={(sourcePos.y + targetPos.y) / 2 - 6}
+                  fill={isCrit ? '#f85149' : '#8b949e'}
+                  fontSize="8.5"
                   fontFamily="JetBrains Mono, monospace"
                   textAnchor="middle"
                   className="select-none pointer-events-none"
@@ -197,25 +193,29 @@ export const AttackGraphView: React.FC<AttackGraphViewProps> = ({ data, onRefres
                 key={node.id}
                 transform={`translate(${pos.x}, ${pos.y})`}
                 onClick={() => setSelectedNode(node)}
-                className="cursor-pointer transition-transform duration-200 hover:scale-105"
+                className="cursor-pointer"
               >
-                {/* Outer Glow Halo */}
-                <circle
-                  r={isSelected ? 26 : 21}
-                  fill="#0B0F19"
-                  stroke={color}
-                  strokeWidth={isSelected ? '3.5' : '2'}
-                  filter={isSelected ? `drop-shadow(0px 0px 10px ${color})` : undefined}
+                {/* Node Body */}
+                <rect
+                  x="-18"
+                  y="-18"
+                  width="36"
+                  height="36"
+                  rx="4"
+                  fill="#161b22"
+                  stroke={isSelected ? '#58a6ff' : color}
+                  strokeWidth={isSelected ? '2' : '1'}
                 />
-                {/* Inner Core */}
-                <circle r="6" fill={color} className="animate-pulse" />
+
+                {/* Status Dot */}
+                <circle cx="0" cy="0" r="4" fill={color} />
 
                 {/* Node Label */}
                 <text
-                  y="34"
-                  fill="#F8FAFC"
-                  fontSize="10"
-                  fontWeight="bold"
+                  y="28"
+                  fill="#f0f6fc"
+                  fontSize="9.5"
+                  fontWeight="600"
                   textAnchor="middle"
                   fontFamily="JetBrains Mono, monospace"
                   className="select-none"
@@ -225,7 +225,7 @@ export const AttackGraphView: React.FC<AttackGraphViewProps> = ({ data, onRefres
 
                 {/* Risk Micro-Pill */}
                 <text
-                  y="46"
+                  y="39"
                   fill={color}
                   fontSize="8"
                   textAnchor="middle"
@@ -241,50 +241,48 @@ export const AttackGraphView: React.FC<AttackGraphViewProps> = ({ data, onRefres
 
         {/* Selected Node Tactical Details Drawer */}
         {selectedNode && (
-          <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:w-88 bg-[#090e1c]/95 border border-cyan-500/40 rounded-2xl p-4 backdrop-blur-xl shadow-2xl font-mono text-xs z-20">
-            <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <Crosshair className="w-4 h-4 text-cyan-400" />
-                <span className="font-bold text-white text-sm truncate max-w-[200px]">
+          <div className="absolute bottom-3 left-3 right-3 sm:right-auto sm:w-80 bg-[#161b22] border border-[#30363d] rounded p-3 font-mono text-xs z-20">
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#21262d]">
+              <div className="flex items-center gap-1.5">
+                <Crosshair className="w-3.5 h-3.5 text-[#58a6ff]" />
+                <span className="font-bold text-[#f0f6fc] text-xs truncate max-w-[180px]">
                   {selectedNode.label}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedNode(null)}
-                className="text-slate-400 hover:text-white p-1 cursor-pointer"
+                className="text-[#8b949e] hover:text-white p-0.5 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            <div className="space-y-2 text-slate-300">
+            <div className="space-y-1.5 text-[#c9d1d9] text-[11px]">
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">Topology Type:</span>
-                <span className="text-cyan-400 font-bold px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30">
+                <span className="text-[#8b949e]">Topology Type:</span>
+                <span className="text-[#58a6ff] font-semibold">
                   {selectedNode.type}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">Risk Assessment:</span>
-                <span className="text-rose-400 font-bold flex items-center gap-1">
-                  <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
+                <span className="text-[#8b949e]">Risk Score:</span>
+                <span className="text-[#f85149] font-bold">
                   {selectedNode.value} / 100 ({selectedNode.riskLevel})
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">Active Defense:</span>
-                <span className="text-emerald-400 font-bold flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-[#8b949e]">Mitigation:</span>
+                <span className="text-[#2ea043] font-semibold">
                   Zero-Trust Quarantined
                 </span>
               </div>
             </div>
 
-            <div className="mt-3 pt-2.5 border-t border-white/5 space-y-2">
+            <div className="mt-2.5 pt-2 border-t border-[#21262d] space-y-1.5">
               {investigatingMsg && (
-                <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-[11px] font-mono flex items-center gap-1.5 animate-fadeIn">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <div className="p-1.5 rounded bg-[#132a1c] border border-[#2ea043]/30 text-[#2ea043] text-[10px] font-mono flex items-center gap-1.5">
+                  <ShieldCheck className="w-3 h-3 text-[#2ea043] shrink-0" />
                   <span>{investigatingMsg}</span>
                 </div>
               )}
@@ -293,11 +291,11 @@ export const AttackGraphView: React.FC<AttackGraphViewProps> = ({ data, onRefres
                 onClick={() => {
                   setInvestigatingMsg(
                     lang === 'th'
-                      ? `เปิดท่อดักพยานหลักฐานสำหรับ: ${selectedNode.label} สำเร็จ`
-                      : `Forensic capture pipeline engaged for: ${selectedNode.label}`
+                      ? `เปิดท่อดักพยานหลักฐาน: ${selectedNode.label}`
+                      : `Forensic capture engaged: ${selectedNode.label}`
                   );
                 }}
-                className="w-full py-1.5 px-2 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-[11px] font-bold border border-cyan-500/40 text-center cursor-pointer transition-all flex items-center justify-center gap-1.5"
+                className="w-full py-1 px-2 rounded bg-[#21262d] hover:bg-[#30363d] text-[#58a6ff] text-[11px] font-semibold border border-[#30363d] text-center cursor-pointer transition-colors flex items-center justify-center gap-1.5"
               >
                 <Terminal className="w-3 h-3" />
                 {lang === 'th' ? 'สืบค้นพยานหลักฐานเชิงลึก' : 'Deep Forensic Pipeline'}

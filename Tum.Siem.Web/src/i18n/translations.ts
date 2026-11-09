@@ -33,7 +33,7 @@ export const translations = {
     btnScanning: 'กำลังสแกน...',
     btnExport: 'ส่งออกรายงานพยานหลักฐาน',
     btnDatasets: 'คลังชุดข้อมูลจริง & ล้างขยะ Prod',
-    btnCyberRange: '🌐 สนามจำลองไซเบอร์เสมือนจริง (Cyber Range)',
+    btnCyberRange: 'สนามจำลองไซเบอร์เสมือนจริง (Cyber Range)',
     btnLogout: 'ออกจากระบบ',
 
     // View Titles & Subtitles
@@ -117,7 +117,7 @@ export const translations = {
     btnScanning: 'Scanning...',
     btnExport: 'Export Audit Evidence',
     btnDatasets: 'Real Datasets & Prod Clean',
-    btnCyberRange: '🌐 Enterprise Cyber Range',
+    btnCyberRange: 'Enterprise Cyber Range',
     btnLogout: 'Sign Out',
 
     // View Titles & Subtitles

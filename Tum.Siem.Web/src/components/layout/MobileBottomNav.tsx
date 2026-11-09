@@ -29,7 +29,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   ];
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#060a14]/95 backdrop-blur-xl border-t border-white/10 px-3 py-2 flex items-center justify-around shadow-[0_-5px_25px_rgba(0,0,0,0.5)]">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0d1117] border-t border-[#21262d] px-3 py-1.5 flex items-center justify-around">
       {items.slice(0, 2).map((item) => {
         const Icon = item.icon;
         const isActive = activeTab === item.id;
@@ -38,12 +38,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             key={item.id}
             type="button"
             onClick={() => onTabChange(item.id)}
-            className={`flex flex-col items-center justify-center min-w-[54px] min-h-[44px] rounded-xl transition-all ${
-              isActive ? 'text-cyan-400 font-bold' : 'text-slate-400 hover:text-white'
+            className={`flex flex-col items-center justify-center min-w-[50px] min-h-[40px] rounded transition-colors ${
+              isActive ? 'text-[#58a6ff] font-semibold' : 'text-[#8b949e] hover:text-[#f0f6fc]'
             }`}
           >
-            <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : ''}`} />
-            <span className="text-[10px] mt-1 font-mono">{item.label}</span>
+            <Icon className="w-4 h-4" />
+            <span className="text-[10px] mt-0.5 font-mono">{item.label}</span>
           </button>
         );
       })}
@@ -53,9 +53,9 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         type="button"
         onClick={onOpenSimulator}
         title={t.btnSimulate}
-        className="flex flex-col items-center justify-center w-12 h-12 -mt-4 rounded-2xl bg-gradient-to-tr from-rose-600 to-amber-500 text-white shadow-[0_0_20px_rgba(244,63,94,0.4)] active:scale-95 transition-transform cursor-pointer border border-rose-400/30"
+        className="flex flex-col items-center justify-center w-9 h-9 rounded bg-[#3c1e1e] hover:bg-[#4d2525] text-[#f85149] border border-[#f85149]/40 cursor-pointer transition-colors"
       >
-        <Play className="w-5 h-5 fill-current ml-0.5" />
+        <Play className="w-4 h-4 fill-current ml-0.5" />
       </button>
 
       {items.slice(2).map((item) => {
@@ -66,12 +66,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
             key={item.id}
             type="button"
             onClick={() => onTabChange(item.id)}
-            className={`flex flex-col items-center justify-center min-w-[54px] min-h-[44px] rounded-xl transition-all ${
-              isActive ? 'text-cyan-400 font-bold' : 'text-slate-400 hover:text-white'
+            className={`flex flex-col items-center justify-center min-w-[50px] min-h-[40px] rounded transition-colors ${
+              isActive ? 'text-[#58a6ff] font-semibold' : 'text-[#8b949e] hover:text-[#f0f6fc]'
             }`}
           >
-            <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5]' : ''}`} />
-            <span className="text-[10px] mt-1 font-mono">{item.label}</span>
+            <Icon className="w-4 h-4" />
+            <span className="text-[10px] mt-0.5 font-mono">{item.label}</span>
           </button>
         );
       })}

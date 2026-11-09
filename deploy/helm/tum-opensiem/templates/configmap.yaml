@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "tum-opensiem.fullname" . }}-config
+  labels:
+    {{- include "tum-opensiem.labels" . | nindent 4 }}
+data:
+  appsettings.Production.json: |
+    {
+      "Siem": {
+        "ApplicationName": "TUM-OpenSIEM-Core",
+        "Environment": "{{ .Values.siemConfig.environment }}",
+        "EnableAutoPiiMasking": {{ .Values.siemConfig.enableAutoPiiMasking }},
+        "EnableThreatDetection": {{ .Values.siemConfig.enableThreatDetection }},
+        "EnableMerkleChaining": {{ .Values.siemConfig.enableMerkleChaining }},
+        "WormRetentionDays": {{ .Values.siemConfig.wormRetentionDays }},
+        "StorageDirectory": "{{ .Values.persistence.mountPath }}",
+        "RulesDirectory": "rules",
+        "AlertRiskThreshold": {{ .Values.siemConfig.alertRiskThreshold }},
+        "NtpServerHost": "{{ .Values.siemConfig.ntpServerHost }}",
+        "CorsOrigins": ["*"]
+      },
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft.AspNetCore": "Warning"
+        }
+      }
+    }

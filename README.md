@@ -175,3 +175,23 @@ TUM-OpenSIEM พัฒนาและเปิดเผยแพร่สู่�
 ## 7. License
 
 TUM-OpenSIEM Core ได้รับอนุญาตให้ใช้งานภายใต้เงื่อนไขสัญญาอนุญาต **[Apache License, Version 2.0](LICENSE)**.
+
+
+---
+
+## 8. Commercial Turnkey Packaging (`D:\TUM\setup-product\tum-socs`)
+
+สำหรับลูกค้าองค์กรและทีมปฏิบัติการความมั่นคงปลอดภัยไซเบอร์ (SOC Operators) ทางกลุ่มบริษัท TUM Group Holdings ได้จัดเตรียมแพ็กเกจ Turnkey สำเร็จรูปพร้อมใช้งานในไดเรกทอรี `D:\TUM\setup-product\tum-socs`:
+
+- **`desktop-app/TUM-OpenSIEM.exe`**: แอปพลิเคชัน Desktop สำหรับ Operator ทำงานแบบ Standalone ไม่ต้องต่อเน็ต มี Console ในตัว
+- **`docker-appliance/`**:
+  - `tum-opensiem-appliance-offline.tar.gz`: อิมเมจ Docker Appliance แบบออฟไลน์สำหรับการติดตั้งในเครือข่าย Air-Gapped
+  - `docker-compose.yml` & Multi-stage `Dockerfile`: สำหรับการรัน Stack แบบ All-in-One ในเครื่องแม่ข่าย
+- **`helm/tum-opensiem/`**: Kubernetes Helm v3 Chart สำหรับการ Deploy ขึ้น Production Cluster พร้อม Ingress, Probes, ConfigMap
+- **`stress-test/`**: สคริปต์ Stress Test สร้างโหลด 50,000 – 100,000 EPS สำหรับการทดสอบขีดความสามารถก่อนขึ้นระบบจริง
+- **`smoke-test.ps1`**: สคริปต์ตรวจสอบความสมบูรณ์ของแพ็กเกจแบบอัตโนมัติ
+
+### คำสั่งรัน Smoke Test ตรวจสอบความพร้อม:
+```powershell
+powershell -ExecutionPolicy Bypass -File D:\TUM\setup-product\tum-socs\smoke-test.ps1
+```

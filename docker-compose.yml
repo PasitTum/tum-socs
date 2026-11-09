@@ -1,12 +1,29 @@
+# ==============================================================================
+# TUM-OpenSIEM All-in-One Enterprise SIEM Appliance
+# Commercial Turnkey Architecture:
+#   - Core Ingestion Mesh (HTTP REST & Syslog UDP/TCP RFC 5424 / RFC 3164)
+#   - ClickHouse Analytical Telemetry Sink
+#   - In-Memory SigmaHQ v2 Detection Engine (<0.15 μs AST evaluation)
+#   - Integrated Hallmark Console Web HUD (Served via ASP.NET Core)
+# ==============================================================================
+
 version: '3.8'
+
+networks:
+  tum-mesh:
+    name: tum-enterprise-mesh
+    driver: bridge
 
 services:
   clickhouse:
     image: clickhouse/clickhouse-server:24.3-alpine
-    container_name: tum-opコミュニティ-clickhouse
+    container_name: tum-clickhouse-sink
+    hostname: clickhouse
+    networks:
+      - tum-mesh
     ports:
-      - "8123:8123" # HTTP Ingestion Port (used by ClickHouseSinkAdapter)
-      - "9000:9000" # Native TCP Client Port
+      - "8123:8123" # HTTP Query & Ingestion Interface
+      - "9000:9000" # Native Client Interface
     environment:
       - CLICKHOUSE_DB=tum_siem
       - CLICKHOUSE_USER=tum_admin
@@ -27,24 +44,51 @@ services:
         soft: 262144
         hard: 262144
 
-  tum-opコミュニティ-siem:
-    image: mcr.microsoft.com/dotnet/runtime:8.0-alpine
-    container_name: tum-opensiem-core
+  tum-siem-appliance:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tum-trust/tum-opensiem:2.0.0
+    container_name: tum-siem-appliance
+    hostname: tum-siem
+    networks:
+      - tum-mesh
+    ports:
+      - "5200:5200"     # Hallmark Console Web HUD & REST Ingestion API
+      - "514:514/udp"   # Syslog RFC 5424/3164 Ingestion (UDP)
+      - "514:514/tcp"   # Syslog RFC 5424/3164 Ingestion (TCP)
     environment:
-      - DOTNET_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5200
       - CLICKHOUSE_ENDPOINT=http://clickhouse:8123
       - CLICKHOUSE_DATABASE=tum_siem
       - CLICKHOUSE_USER=tum_admin
       - CLICKHOUSE_PASSWORD=tum_sovereign_2026
       - TUM_RISK_THRESHOLD=70.0
-      - TUM_DEFENSE_MODE=AuditOnly
+      - TUM_DEFENSE_MODE=ActiveMitigation
+      - TZ=Asia/Bangkok
+    volumes:
+      - tum_worm_storage:/app/tum_logs
+      - ./rules:/app/rules:ro
     depends_on:
       clickhouse:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5200/health || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
     restart: unless-stopped
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
 
 volumes:
   clickhouse_data:
     name: tum_siem_clickhouse_data
   clickhouse_logs:
     name: tum_siem_clickhouse_logs
+  tum_worm_storage:
+    name: tum_siem_worm_storage

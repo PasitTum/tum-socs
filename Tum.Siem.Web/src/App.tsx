@@ -151,7 +151,7 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#030712] text-slate-100 selection:bg-cyan-500 selection:text-black">
+    <div className="flex min-h-screen bg-[#0b0f14] text-[#f0f6fc] selection:bg-[#1f6feb] selection:text-white font-sans antialiased">
       {/* Sidebar Navigation (Desktop persistent + Mobile Drawer) */}
       <Sidebar
         activeTab={activeTab}
@@ -164,7 +164,7 @@ export const App: React.FC = () => {
       />
 
       {/* Main Content Area */}
-      <main className="flex-grow p-4 sm:p-6 lg:p-8 pb-24 lg:pb-8 overflow-y-auto max-w-[1700px] mx-auto w-full">
+      <main className="flex-grow p-3 sm:p-4 lg:p-6 pb-20 lg:pb-6 overflow-y-auto max-w-[1920px] mx-auto w-full">
         <Header
           activeTab={activeTab}
           onOpenSimulator={() => setIsSimulatorOpen(true)}

@@ -119,31 +119,31 @@ export const AttackSimulatorModal: React.FC<AttackSimulatorModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
-      <div className="bg-[#0B0E1A] border border-rose-500/40 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-[0_0_50px_rgba(244,63,94,0.25)] overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
+      <div className="bg-[#161b22] border border-[#30363d] rounded w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-5 border-b border-white/10 bg-slate-900/80">
+        <div className="flex items-center justify-between p-4 border-b border-[#21262d] bg-[#0d1117]">
           <div className="flex items-center gap-2.5">
-            <ShieldAlert className="w-5 h-5 text-rose-400" />
+            <ShieldAlert className="w-4 h-4 text-[#f85149]" />
             <div>
-              <h3 className="text-base font-black text-white">
+              <h3 className="text-sm font-bold text-[#f0f6fc]">
                 กล่องทดสอบการโจมตีจำลอง (Red-Team Attack Injection Suite)
               </h3>
-              <p className="text-xs text-slate-400 font-sans">
+              <p className="text-[11px] text-[#8b949e] font-sans">
                 ยิงแพ็กเก็ตภัยคุกคามจริงเข้าสู่ TUM-OpenSIEM Core เพื่อสังเกตการตัดกำบัง PII และการสกัดกั้น
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1.5 rounded-lg bg-slate-800/80"
+            className="text-[#8b949e] hover:text-white p-1 rounded bg-[#21262d] border border-[#30363d]"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Scenarios List */}
-        <div className="p-5 overflow-y-auto space-y-3 flex-grow font-mono text-xs">
+        <div className="p-4 overflow-y-auto space-y-2.5 flex-grow font-mono text-xs">
           {scenarios.map((sc) => {
             const isLoading = loadingType === sc.id;
             const isCritical = sc.severity === 'Critical';
@@ -151,23 +151,23 @@ export const AttackSimulatorModal: React.FC<AttackSimulatorModalProps> = ({
             return (
               <div
                 key={sc.id}
-                className="bg-slate-900/60 border border-white/5 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-white/15 transition-all"
+                className="bg-[#0d1117] border border-[#21262d] rounded p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 hover:border-[#30363d] transition-colors"
               >
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-white text-sm font-sans">{sc.title}</span>
+                    <span className="font-semibold text-[#f0f6fc] text-xs font-sans">{sc.title}</span>
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      className={`px-1.5 py-0.2 rounded text-[9px] font-semibold border ${
                         isCritical
-                          ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                          : 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30'
+                          ? 'bg-[#3c1e1e] text-[#f85149] border-[#f85149]/40'
+                          : 'bg-[#162a3a] text-[#58a6ff] border-[#58a6ff]/30'
                       }`}
                     >
                       {sc.mitre}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 font-sans leading-relaxed">{sc.desc}</p>
-                  <div className="text-[11px] text-cyan-300 truncate max-w-md pt-0.5">
+                  <p className="text-[11px] text-[#8b949e] font-sans leading-relaxed">{sc.desc}</p>
+                  <div className="text-[10px] text-[#58a6ff] truncate max-w-md pt-0.5">
                     {sc.payload.payloadSanitized}
                   </div>
                 </div>
@@ -175,14 +175,14 @@ export const AttackSimulatorModal: React.FC<AttackSimulatorModalProps> = ({
                 <button
                   onClick={() => handleSimulate(sc)}
                   disabled={isLoading}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold shrink-0 flex items-center justify-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 ${
+                  className={`px-3 py-1.5 rounded text-xs font-medium shrink-0 flex items-center justify-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50 ${
                     isCritical
-                      ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-[0_0_15px_rgba(244,63,94,0.3)]'
-                      : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950'
+                      ? 'bg-[#3c1e1e] hover:bg-[#4d2525] text-[#f85149] border border-[#f85149]/40'
+                      : 'bg-[#1f6feb] hover:bg-[#388bfd] text-white'
                   }`}
                 >
-                  <Play className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : 'fill-current'}`} />
-                  {isLoading ? 'กำลังยิง...' : 'ทดสอบยิง'}
+                  <Play className={`w-3 h-3 ${isLoading ? 'animate-spin' : 'fill-current'}`} />
+                  <span>{isLoading ? 'กำลังยิง...' : 'ทดสอบยิง'}</span>
                 </button>
               </div>
             );
@@ -190,25 +190,25 @@ export const AttackSimulatorModal: React.FC<AttackSimulatorModalProps> = ({
 
           {/* Last Simulation Execution Status */}
           {lastResult && (
-            <div className="mt-4 p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 text-xs space-y-1">
-              <div className="flex items-center gap-1.5 font-bold text-sm text-emerald-400">
-                <CheckCircle className="w-4 h-4" />
+            <div className="mt-3 p-3 rounded bg-[#132a1c] border border-[#2ea043]/30 text-[#2ea043] text-xs space-y-1">
+              <div className="flex items-center gap-1.5 font-bold text-xs text-[#2ea043]">
+                <CheckCircle className="w-3.5 h-3.5" />
                 <span>ผลลัพธ์การประมวลผลจาก TUM-OpenSIEM Core:</span>
               </div>
-              <div>• Log ID: <span className="text-white">{lastResult.logId}</span></div>
-              <div>• Dynamic Risk Score: <strong className="text-rose-400">{lastResult.riskScore}/100</strong> ({lastResult.severityBand})</div>
-              <div>• กฎ Sigma ตรวจจับพบ: <strong className="text-amber-400">{lastResult.sigmaMatchesCount} กฎ</strong></div>
-              <div>• ข้อมูล PII ถูกกำบังอัตโนมัติ: <strong className="text-emerald-400">{lastResult.piiRedacted} ตำแหน่ง</strong></div>
-              <div>• Cryptographic SHA-256 Hash: <span className="text-cyan-400 break-all">{lastResult.tamperProofHash}</span></div>
+              <div>• Log ID: <span className="text-[#f0f6fc]">{lastResult.logId}</span></div>
+              <div>• Dynamic Risk Score: <strong className="text-[#f85149]">{lastResult.riskScore}/100</strong> ({lastResult.severityBand})</div>
+              <div>• กฎ Sigma ตรวจจับพบ: <strong className="text-[#d29922]">{lastResult.sigmaMatchesCount} กฎ</strong></div>
+              <div>• ข้อมูล PII ถูกกำบังอัตโนมัติ: <strong className="text-[#2ea043]">{lastResult.piiRedacted} ตำแหน่ง</strong></div>
+              <div>• Cryptographic SHA-256 Hash: <span className="text-[#58a6ff] break-all text-[10px]">{lastResult.tamperProofHash}</span></div>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-white/10 bg-slate-900/80 flex justify-end">
+        <div className="p-3 border-t border-[#21262d] bg-[#0d1117] flex justify-end">
           <button
             onClick={onClose}
-            className="px-5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white text-xs cursor-pointer"
+            className="px-3.5 py-1.5 rounded bg-[#21262d] text-[#c9d1d9] hover:text-white text-xs cursor-pointer border border-[#30363d]"
           >
             ปิดหน้าต่าง
           </button>

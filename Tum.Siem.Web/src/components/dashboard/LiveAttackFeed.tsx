@@ -9,7 +9,6 @@ import {
   Terminal,
   Cpu,
   Lock,
-  Hash,
   X,
   Fingerprint,
 } from 'lucide-react';
@@ -37,32 +36,32 @@ export const LiveAttackFeed: React.FC<LiveAttackFeedProps> = ({ events, lang = '
   });
 
   return (
-    <div className="bg-[#0b101e]/80 border border-white/10 rounded-2xl p-5 backdrop-blur-xl flex flex-col h-[530px] relative overflow-hidden shadow-2xl">
+    <div className="bg-[#161b22] border border-[#21262d] rounded p-4 flex flex-col h-[500px] relative">
       {/* Feed Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 mb-3 border-b border-white/5">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
-            <Terminal className="w-4 h-4" />
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-[#21262d]">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded bg-[#21262d] flex items-center justify-center text-[#58a6ff]">
+            <Terminal className="w-3.5 h-3.5" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+            <h3 className="text-xs font-semibold text-[#f0f6fc] uppercase tracking-wider font-mono">
               {t.liveFeedTitle}
             </h3>
-            <p className="text-[10px] text-slate-500 font-mono">
+            <p className="text-[10px] text-[#8b949e] font-mono">
               WORM MERKLE STREAM // ZERO INGESTION TAX
             </p>
           </div>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 font-mono text-[11px] bg-slate-900/80 p-1 rounded-xl border border-white/10">
+        <div className="flex items-center gap-1 font-mono text-[11px] bg-[#0d1117] p-0.5 rounded border border-[#21262d]">
           <button
             type="button"
             onClick={() => setFilter('all')}
-            className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
               filter === 'all'
-                ? 'bg-cyan-500 text-slate-950 font-bold shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#1f6feb] text-white'
+                : 'text-[#8b949e] hover:text-[#f0f6fc]'
             }`}
           >
             {lang === 'th' ? 'ทั้งหมด' : 'All'} ({events.length})
@@ -70,10 +69,10 @@ export const LiveAttackFeed: React.FC<LiveAttackFeedProps> = ({ events, lang = '
           <button
             type="button"
             onClick={() => setFilter('threats')}
-            className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
               filter === 'threats'
-                ? 'bg-rose-500 text-white font-bold shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#f85149] text-white'
+                : 'text-[#8b949e] hover:text-[#f0f6fc]'
             }`}
           >
             {lang === 'th' ? 'ภัยคุกคาม' : 'Threats'}
@@ -81,10 +80,10 @@ export const LiveAttackFeed: React.FC<LiveAttackFeedProps> = ({ events, lang = '
           <button
             type="button"
             onClick={() => setFilter('pii')}
-            className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+            className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-colors cursor-pointer ${
               filter === 'pii'
-                ? 'bg-emerald-500 text-slate-950 font-bold shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-[#2ea043] text-white'
+                : 'text-[#8b949e] hover:text-[#f0f6fc]'
             }`}
           >
             PDPA
@@ -93,12 +92,12 @@ export const LiveAttackFeed: React.FC<LiveAttackFeedProps> = ({ events, lang = '
       </div>
 
       {/* Feed Stream */}
-      <div className="flex-grow overflow-y-auto space-y-2.5 pr-1 font-mono text-xs">
+      <div className="flex-grow overflow-y-auto space-y-1.5 pr-1 font-mono text-xs">
         {filteredEvents.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-slate-500 space-y-3">
-            <Cpu className="w-10 h-10 animate-pulse text-cyan-500/40" />
-            <p className="text-sm font-bold text-slate-400 font-sans">{t.waitingTelemetry}</p>
-            <p className="text-xs text-slate-500 font-sans max-w-sm text-center">
+          <div className="h-full flex flex-col items-center justify-center text-[#6e7681] space-y-2">
+            <Cpu className="w-8 h-8 text-[#30363d]" />
+            <p className="text-xs font-semibold text-[#8b949e] font-sans">{t.waitingTelemetry}</p>
+            <p className="text-[11px] text-[#6e7681] font-sans max-w-sm text-center">
               {t.simHint}
             </p>
           </div>
@@ -113,62 +112,62 @@ export const LiveAttackFeed: React.FC<LiveAttackFeedProps> = ({ events, lang = '
               <div
                 key={ev.logId}
                 onClick={() => setSelectedEvent(ev)}
-                className={`p-3 rounded-xl border transition-all cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 group ${
+                className={`p-2.5 rounded border transition-colors cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 ${
                   isCritical
-                    ? 'bg-rose-950/25 border-rose-500/30 hover:border-rose-400 hover:bg-rose-950/40 hover:shadow-[0_0_15px_rgba(244,63,94,0.15)]'
+                    ? 'bg-[#3c1e1e]/40 border-[#f85149]/30 hover:border-[#f85149]/60'
                     : isWarning
-                    ? 'bg-amber-950/25 border-amber-500/30 hover:border-amber-400 hover:bg-amber-950/40'
-                    : 'bg-[#090e1c] border-white/5 hover:border-cyan-500/30 hover:bg-slate-900/80'
+                    ? 'bg-[#2b220c]/40 border-[#d29922]/30 hover:border-[#d29922]/60'
+                    : 'bg-[#0d1117] border-[#21262d] hover:border-[#30363d]'
                 }`}
               >
-                <div className="flex items-center gap-3 overflow-hidden">
+                <div className="flex items-center gap-2.5 overflow-hidden">
                   <div className="shrink-0">
                     {isCritical ? (
-                      <div className="w-6 h-6 rounded-lg bg-rose-500/20 flex items-center justify-center text-rose-400">
-                        <ShieldX className="w-4 h-4" />
+                      <div className="w-5 h-5 rounded bg-[#3c1e1e] flex items-center justify-center text-[#f85149]">
+                        <ShieldX className="w-3.5 h-3.5" />
                       </div>
                     ) : isWarning ? (
-                      <div className="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400">
-                        <AlertTriangle className="w-4 h-4" />
+                      <div className="w-5 h-5 rounded bg-[#2b220c] flex items-center justify-center text-[#d29922]">
+                        <AlertTriangle className="w-3.5 h-3.5" />
                       </div>
                     ) : (
-                      <div className="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                        <CheckCircle className="w-4 h-4" />
+                      <div className="w-5 h-5 rounded bg-[#132a1c] flex items-center justify-center text-[#2ea043]">
+                        <CheckCircle className="w-3.5 h-3.5" />
                       </div>
                     )}
                   </div>
 
                   <div className="truncate">
-                    <div className="flex items-center gap-2 font-tabular">
-                      <span className="text-slate-500 text-[10px]">{timeStr}</span>
-                      <span className="text-slate-200 font-bold">{ev.clientIp}</span>
-                      <span className="text-cyan-400 text-[11px]">
-                        ➔ {ev.httpMethod ?? 'POST'} {ev.requestPath ?? ev.eventName}
+                    <div className="flex items-center gap-2 font-tabular text-[11px]">
+                      <span className="text-[#6e7681]">{timeStr}</span>
+                      <span className="text-[#c9d1d9] font-medium">{ev.clientIp}</span>
+                      <span className="text-[#58a6ff]">
+                        {ev.httpMethod ?? 'POST'} {ev.requestPath ?? ev.eventName}
                       </span>
                     </div>
-                    <div className="text-[11px] text-slate-400 truncate mt-0.5 group-hover:text-slate-300 transition-colors">
+                    <div className="text-[10px] text-[#8b949e] truncate mt-0.5">
                       {ev.payloadSanitized || ev.eventName}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
                   {ev.piiRedactedCount > 0 && (
-                    <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 font-bold">
-                      <Lock className="w-3 h-3 text-emerald-400" />
+                    <span className="px-1.5 py-0.5 rounded text-[9px] bg-[#132a1c] text-[#2ea043] border border-[#2ea043]/30 flex items-center gap-1 font-semibold">
+                      <Lock className="w-2.5 h-2.5 text-[#2ea043]" />
                       PDPA ({ev.piiRedactedCount})
                     </span>
                   )}
                   <span
-                    className={`px-2.5 py-0.5 rounded text-[10px] font-bold tracking-wide ${
+                    className={`px-1.5 py-0.5 rounded text-[9px] font-semibold tracking-wide border ${
                       isCritical
-                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40 shadow-[0_0_10px_rgba(244,63,94,0.2)]'
+                        ? 'bg-[#3c1e1e] text-[#f85149] border-[#f85149]/40'
                         : isWarning
-                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
-                        : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                        ? 'bg-[#2b220c] text-[#d29922] border-[#d29922]/40'
+                        : 'bg-[#132a1c] text-[#2ea043] border-[#2ea043]/30'
                     }`}
                   >
-                    {isCritical ? 'CRITICAL THREAT' : isWarning ? 'SUSPICIOUS' : 'VERIFIED WORM'}
+                    {isCritical ? 'CRITICAL' : isWarning ? 'SUSPICIOUS' : 'VERIFIED WORM'}
                   </span>
                 </div>
               </div>
@@ -179,60 +178,57 @@ export const LiveAttackFeed: React.FC<LiveAttackFeedProps> = ({ events, lang = '
 
       {/* FORENSIC INSPECTOR MODAL */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-[#090e1c] border border-cyan-500/40 rounded-3xl p-6 shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
-              <div className="flex items-center gap-2.5">
-                <Fingerprint className="w-5 h-5 text-cyan-400" />
-                <h3 className="text-base font-bold text-white font-mono">
+        <div className="fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-[#161b22] border border-[#30363d] rounded p-5 relative">
+            <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#21262d]">
+              <div className="flex items-center gap-2">
+                <Fingerprint className="w-4 h-4 text-[#58a6ff]" />
+                <h3 className="text-sm font-bold text-[#f0f6fc] font-mono">
                   {lang === 'th' ? 'การสืบค้นพยานหลักฐานทางนิติวิทยาศาสตร์' : 'Forensic Custody Inspection'}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setSelectedEvent(null)}
-                className="text-slate-400 hover:text-white p-1 cursor-pointer"
+                className="text-[#8b949e] hover:text-white p-1 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="space-y-3 font-mono text-xs">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl bg-slate-900/80 border border-white/5">
-                  <span className="text-slate-500 block text-[10px]">EVENT IDENTIFIER:</span>
-                  <span className="text-cyan-400 font-bold truncate block">{selectedEvent.logId}</span>
+            <div className="space-y-2.5 font-mono text-xs">
+              <div className="grid grid-cols-2 gap-2 text-[11px]">
+                <div className="p-2 bg-[#0d1117] rounded border border-[#21262d]">
+                  <span className="text-[#6e7681] block">Log ID:</span>
+                  <span className="text-[#f0f6fc] font-bold">{selectedEvent.logId}</span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-900/80 border border-white/5">
-                  <span className="text-slate-500 block text-[10px]">CLIENT ORIGIN:</span>
-                  <span className="text-white font-bold">{selectedEvent.clientIp}</span>
+                <div className="p-2 bg-[#0d1117] rounded border border-[#21262d]">
+                  <span className="text-[#6e7681] block">Client IP:</span>
+                  <span className="text-[#f0f6fc] font-bold">{selectedEvent.clientIp}</span>
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-white/5">
-                <span className="text-slate-500 block text-[10px] mb-1">
-                  SHA-256 TAMPER-PROOF WORM SEAL:
-                </span>
-                <span className="text-emerald-400 font-bold break-all flex items-center gap-1.5">
-                  <Hash className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                  {selectedEvent.tamperProofHash || 'SHA256_GENESIS_SEAL_INTACT_AUTHENTICATED'}
-                </span>
+              <div className="p-2.5 bg-[#0d1117] rounded border border-[#21262d]">
+                <span className="text-[#6e7681] block mb-1">Sanitized Event Payload:</span>
+                <p className="text-[#58a6ff] break-all leading-relaxed">
+                  {selectedEvent.payloadSanitized || selectedEvent.eventName}
+                </p>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-white/5">
-                <span className="text-slate-500 block text-[10px] mb-1">SANITIZED PAYLOAD:</span>
-                <pre className="text-slate-200 text-[11px] whitespace-pre-wrap bg-black/50 p-2.5 rounded-lg border border-white/5 max-h-36 overflow-y-auto">
-                  {selectedEvent.payloadSanitized || JSON.stringify(selectedEvent, null, 2)}
-                </pre>
+              <div className="p-2.5 bg-[#0d1117] rounded border border-[#21262d]">
+                <span className="text-[#6e7681] block mb-1">WORM SHA-256 Merkle Proof:</span>
+                <p className="text-[#2ea043] break-all">
+                  {selectedEvent.tamperProofHash || 'SHA-256 PENDING'}
+                </p>
               </div>
 
               <div className="flex justify-end pt-2">
                 <button
                   type="button"
                   onClick={() => setSelectedEvent(null)}
-                  className="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 font-bold text-xs hover:bg-cyan-400 cursor-pointer"
+                  className="px-3 py-1.5 rounded bg-[#21262d] hover:bg-[#30363d] text-[#c9d1d9] text-xs font-medium cursor-pointer"
                 >
-                  {lang === 'th' ? 'ปิดหน้าต่าง' : 'Dismiss'}
+                  {lang === 'th' ? 'ปิด' : 'Close'}
                 </button>
               </div>
             </div>

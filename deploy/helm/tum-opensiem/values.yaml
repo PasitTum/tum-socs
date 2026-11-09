@@ -1,0 +1,102 @@
+# ==============================================================================
+# TUM-OpenSIEM Enterprise Helm Chart Values
+# ==============================================================================
+
+replicaCount: 1
+
+image:
+  repository: tum-trust/tum-opensiem
+  pullPolicy: IfNotPresent
+  tag: "2.0.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+service:
+  type: ClusterIP
+  httpPort: 5200
+  syslogUdpPort: 514
+  syslogTcpPort: 514
+  annotations: {}
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "64m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+  hosts:
+    - host: siem.tum-enterprise.internal
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  limits:
+    cpu: 4000m
+    memory: 8Gi
+  requests:
+    cpu: 1000m
+    memory: 2Gi
+
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 100Gi
+  mountPath: /app/tum_logs
+
+siemConfig:
+  environment: Production
+  alertRiskThreshold: 70.0
+  enableAutoPiiMasking: true
+  enableThreatDetection: true
+  enableMerkleChaining: true
+  wormRetentionDays: 90
+  ntpServerHost: "time.navy.mi.th"
+
+# Embedded ClickHouse Sub-Deployment (Can be disabled if external ClickHouse cluster is used)
+clickhouse:
+  enabled: true
+  image:
+    repository: clickhouse/clickhouse-server
+    tag: "24.3-alpine"
+    pullPolicy: IfNotPresent
+  database: tum_siem
+  user: tum_admin
+  password: tum_sovereign_2026
+  persistence:
+    size: 200Gi
+    storageClass: ""
+  resources:
+    limits:
+      cpu: 4000m
+      memory: 16Gi
+    requests:
+      cpu: 1000m
+      memory: 4Gi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -1,0 +1,31 @@
+==============================================================================
+TUM-OpenSIEM Commercial Enterprise Appliance deployed successfully!
+==============================================================================
+
+1. Access the Hallmark Console Web HUD:
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}
+{{- end }}
+{{- else }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "tum-opensiem.name" . }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 5200:5200
+  echo "Visit http://127.0.0.1:5200"
+{{- end }}
+
+2. Syslog Ingestion Endpoints (RFC 5424 / RFC 3164):
+  UDP Port: 514
+  TCP Port: 514
+
+3. Telemetry ClickHouse Storage:
+{{- if .Values.clickhouse.enabled }}
+  Endpoint: http://{{ include "tum-opensiem.fullname" . }}-clickhouse:8123
+  Database: {{ .Values.clickhouse.database }}
+{{- else }}
+  External Endpoint: {{ .Values.clickhouse.externalEndpoint }}
+{{- end }}
+
+4. Regulatory Compliance:
+  Thai CCA B.E. 2560 Section 26: 90-day WORM Merkle Ledger Active
+  PDPA B.E. 2562: Automated Zero-Leak PII Sanitization Masking Active
+  FIPS 204: Quantum-Resistant ML-DSA-65 Verification Armed

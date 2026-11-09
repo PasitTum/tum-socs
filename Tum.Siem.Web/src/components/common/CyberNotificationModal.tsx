@@ -26,39 +26,39 @@ export const CyberNotificationModal: React.FC<CyberNotificationModalProps> = ({
   const isSuccess = notification.type === 'success';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md select-none animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 select-none">
       <div
-        className={`bg-[#080d1a] border rounded-3xl w-full max-w-md shadow-2xl overflow-hidden font-sans relative ${
+        className={`bg-[#161b22] border rounded w-full max-w-md overflow-hidden font-sans relative ${
           isError
-            ? 'border-rose-500/50 shadow-[0_0_40px_rgba(244,63,94,0.3)]'
+            ? 'border-[#f85149]/40'
             : isSuccess
-            ? 'border-emerald-500/50 shadow-[0_0_40px_rgba(16,185,129,0.3)]'
-            : 'border-cyan-500/50 shadow-[0_0_40px_rgba(56,189,248,0.3)]'
+            ? 'border-[#2ea043]/40'
+            : 'border-[#30363d]'
         }`}
       >
-        <div className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-3">
+        <div className="p-4">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-2.5">
               <div
-                className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
+                className={`w-7 h-7 rounded flex items-center justify-center ${
                   isError
-                    ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30'
+                    ? 'bg-[#3c1e1e] text-[#f85149]'
                     : isSuccess
-                    ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
-                    : 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30'
+                    ? 'bg-[#132a1c] text-[#2ea043]'
+                    : 'bg-[#21262d] text-[#58a6ff]'
                 }`}
               >
                 {isError ? (
-                  <AlertCircle className="w-5 h-5" />
+                  <AlertCircle className="w-4 h-4" />
                 ) : isSuccess ? (
-                  <CheckCircle2 className="w-5 h-5" />
+                  <CheckCircle2 className="w-4 h-4" />
                 ) : (
-                  <Info className="w-5 h-5" />
+                  <Info className="w-4 h-4" />
                 )}
               </div>
               <div>
-                <h4 className="text-base font-black text-white">{notification.title}</h4>
-                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                <h4 className="text-xs font-bold text-[#f0f6fc]">{notification.title}</h4>
+                <span className="text-[9px] font-mono text-[#8b949e] uppercase tracking-wider">
                   SYSTEM NOTIFICATION
                 </span>
               </div>
@@ -67,29 +67,27 @@ export const CyberNotificationModal: React.FC<CyberNotificationModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="text-slate-400 hover:text-white p-1.5 rounded-xl bg-slate-900 border border-white/10 cursor-pointer"
+              className="text-[#8b949e] hover:text-white p-1 rounded bg-[#21262d] border border-[#30363d] cursor-pointer"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
 
-          <p className="text-xs text-slate-300 font-mono leading-relaxed bg-[#0b1224] p-3.5 rounded-2xl border border-white/5">
+          <p className="text-xs text-[#c9d1d9] leading-relaxed font-sans mb-4">
             {notification.message}
           </p>
 
-          <div className="mt-5 flex justify-end">
+          <div className="flex justify-end">
             <button
               type="button"
               onClick={onClose}
-              className={`px-5 py-2 rounded-xl text-xs font-bold cursor-pointer transition-all active:scale-95 ${
+              className={`px-3 py-1.5 rounded text-xs font-medium cursor-pointer transition-colors ${
                 isError
-                  ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-[0_0_15px_rgba(244,63,94,0.3)]'
-                  : isSuccess
-                  ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.3)]'
-                  : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(56,189,248,0.3)]'
+                  ? 'bg-[#3c1e1e] hover:bg-[#4d2525] text-[#f85149] border border-[#f85149]/40'
+                  : 'bg-[#1f6feb] hover:bg-[#388bfd] text-white'
               }`}
             >
-              OK / ตกลง
+              Dismiss
             </button>
           </div>
         </div>
