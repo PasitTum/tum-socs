@@ -68,9 +68,9 @@ public static class ServiceCollectionExtensions
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "TUM-OpenSIEM Core API",
+                Title = "TUM-SOC Platform API (Phase 1: SIEM Core)",
                 Version = "v2.0",
-                Description = "Sovereign Enterprise SIEM & Real-time Security Mesh API (Thai CCA Sec 26 & ISO 27001 compliant)",
+                Description = "Sovereign Enterprise SOC Platform - Phase 1: Real-time SIEM & Security Mesh (Thai CCA Sec 26 & ISO 27001 compliant)",
                 Contact = new OpenApiContact
                 {
                     Name = "TUM Trust Security Engineering",

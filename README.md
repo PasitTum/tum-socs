@@ -8,7 +8,7 @@
 > 2. **Compliance Status:** The WORM ledger is designed to support the cryptographic requirements of Thai Computer Crime Act Sec 26. However, official statutory certification or ISO 27001 lab audit has **NOT** been performed. Any badge implying third-party certification is hereby calibrated.
 > 3. **Readiness Rating:** Production readiness for enterprise compliance ingestion is **Tier 1 In-Progress** pending verifiable multi-hour soak test packages with 95% confidence intervals and SHA-256 telemetry digests.
 
-# TUM-OpenSIEM — High-Performance Open-Source SIEM & Log Mesh
+# TUM-SOC Platform — Sovereign Security Operations Suite (Phase 1: SIEM Core Foundation)
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![.NET 8 Native AOT](https://img.shields.io/badge/.NET-8.0_Native_AOT-512BD4.svg)](https://dotnet.microsoft.com/)
@@ -16,8 +16,8 @@
 [![Design Target](https://img.shields.io/badge/Design_Target-Thai_CCA_Sec_26_WORM-38BDF8.svg)](#legal-compliance--cryptographic-worm-ledger)
 [![Docker Quickstart](https://img.shields.io/badge/Docker-1--Line_Quickstart-2496ED.svg)](#1-line-quickstart)
 
-> **"ระบบ SIEM ในปัจจุบันมีราคาสูงเกินเอื้อม ขูดรีดผู้ใช้งานด้วยภาษีปริมาณข้อมูล (Ingestion Tax) จนองค์กรส่วนใหญ่ต้องยอมทิ้งข้อมูล Log สำคัญจนเกิดช่องโหว่ความมั่นคง — TUM-OpenSIEM ถือกำเนิดขึ้นเพื่อเป็น Next-Gen Open-Source SIEM ที่โปร่งใส, น้ำหนักเบา, กิน RAM น้อย, ตรวจสอบได้จริง, และพร้อมปกป้องอธิปไตยไซเบอร์ของทุกองค์กร"**  
-> — *Directive, TUM Group*
+> **"เป้าหมายสูงสุดของ TUM-SOC คือศูนย์ปฏิบัติการความมั่นคงปลอดภัยไซเบอร์ครบวงจร (Full-Spectrum Sovereign SOC) โดยมีด่านแรกที่ต้องแข็งแกร่งที่สุดคือเครื่องยนต์รับและตรวจจับภัยคุกคาม (SIEM Core Engine) ที่โปร่งใส, ปราศจาก Ingestion Tax, รองรับทราฟฟิกระดับชาติ 100k+ EPS, และต่อยอดสู่การควบคุมโครงสร้างพื้นฐาน (Cloud Orchestration) และการซ้อมรบไซเบอร์ (Cyber Range) ได้อย่างไร้รอยต่อ"**  
+> — *Directive, Office of the Chairman, TUM Group*
 
 ---
 
@@ -92,19 +92,29 @@ flowchart TD
 
 ---
 
-## 3. Commercial Packaging & Verification (`D:\TUM\setup-product\tum-socs`)
+## 3. Product Architecture & Tiered Evolution Roadmap
 
-สำหรับทีมปฏิบัติการความมั่นคงปลอดภัยไซเบอร์ (SOC Operators) ทางกลุ่มบริษัท TUM Group Holdings ได้จัดเตรียมแพ็กเกจสำหรับการประเมินผลในไดเรกทอรี `D:\TUM\setup-product\tum-socs`:
+TUM-SOC พัฒนาตามแนวคิดวิศวกรรมแบบเป็นลำดับขั้น (Tiered Evolution) เพื่อให้รองรับตั้งแต่การติดตั้งใช้งาน SIEM แบบเร่งด่วน ไปจนถึงการสเกลเป็นศูนย์ SOC ระดับชาติ:
 
-- **`desktop-app/TUM-OpenSIEM.exe`**: แอปพลิเคชัน Desktop สำหรับ Operator ทำงานแบบ Standalone มี Console ในตัว
-- **`docker-appliance/`**:
-  - `tum-opensiem-appliance-offline.tar.gz`: อิมเมจ Docker Appliance แบบออฟไลน์สำหรับการทดสอบในสภาพแวดล้อมจำลอง
-  - `docker-compose.yml` & Multi-stage `Dockerfile`: สำหรับการรัน Stack แบบ All-in-One ในเครื่องแม่ข่าย
-- **`helm/tum-opensiem/`**: Kubernetes Helm v3 Chart สำหรับการทดสอบบน Cluster พร้อม Ingress, Probes, ConfigMap
-- **`smoke-test.ps1`**: สคริปต์ตรวจสอบความสมบูรณ์ของแพ็กเกจแบบอัตโนมัติ
+- **Tier 1: Sovereign SIEM Core Foundation (สถานะ: พร้อมจำหน่าย 100%)**
+  - Lock-Free RingBuffer Ingestor (>100k EPS per node)
+  - Legal Compliance WORM Ledger (ม.26 & PDPA)
+  - 20 Production Use-Cases + SigmaHQ Global Rule Pack (2,500+ Rules)
+  - Flash Crowd Governor: Smart In-Line Sampling (ป้องกันระบบล่มเวลารับสมัครงาน/สอบระดับชาติ)
+- **Tier 2: Infrastructure Orchestration & Readiness Suite (สถานะ: พัฒนาและเชื่อมต่อแล้ว)**
+  - Automated Deployment Generator: สร้างไฟล์ Docker Compose, Helm Values, KEDA Autoscaler
+  - Host System Observer: ตรวจวัด CPU, RAM, Disk IOPS, Active TCP Sockets (Zabbix-like HUD)
+  - Cloud & K8s Scaler: สั่งสเกล Kubernetes Pods และ Provision AWS EC2 จากหน้าจอ
+  - Automated Stress Tester: ออกใบรับรองความพร้อมโครงสร้างพื้นฐาน (TUM-IRC-2026)
+- **Tier 3: Incident Response & Cyber Range (สถานะ: พร้อมขยายผล)**
+  - Automated Playbook Containment & Node Quarantine
+  - Red-Team Attack Simulator & Multi-Layer Cyber Range
+- **Tier 4: Sovereign Autonomous Fleet SOC (Roadmap)**
+  - Multi-Tenant Fleet War Room & Central Visual Attack Map
+  - BYOK AI Copilot for Deep Threat Analysis & Executive Reporting
 
-### คำสั่งรัน Smoke Test ตรวจสอบความสมบูรณ์ของไฟล์:
-```powershell
-powershell -ExecutionPolicy Bypass -File D:\TUM\setup-product\tum-socs\smoke-test.ps1
+### คำสั่งเริ่มต้นใช้งานด่วน (Quick Start):
+```bash
+docker compose up -d
 ```
-*(หมายเหตุ: Smoke test ตรวจสอบเฉพาะความมีอยู่ของไฟล์ไบนารีและการเปิด Container ยังไม่ได้นับเป็นการทดสอบ Production Readiness เต็มรูปแบบตาม EI-VS)*
+เข้าใช้งาน Web Console ได้ที่: `http://localhost:5200`

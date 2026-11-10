@@ -18,9 +18,9 @@ public static class WebApplicationExtensions
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "TUM-OpenSIEM Core v2.0");
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "TUM-SOC Core v2.0 (SIEM Edition)");
             c.RoutePrefix = "swagger";
-            c.DocumentTitle = "TUM-OpenSIEM API Explorer";
+            c.DocumentTitle = "TUM-SOC Platform API Explorer (SIEM Core)";
         });
 
         // 3. CORS
