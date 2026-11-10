@@ -47,6 +47,11 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ISigmaRuleLoaderService, SigmaRuleLoaderService>();
         services.AddSingleton<IDigitalReceiptService, DigitalReceiptService>();
         services.AddSingleton<IEbpfFileTracingService, EbpfFileTracingService>();
+        services.AddSingleton<ISmartSamplingGovernor, SmartSamplingGovernor>();
+        services.AddSingleton<IDeploymentGeneratorService, DeploymentGeneratorService>();
+        services.AddSingleton<IHostTelemetryService, HostTelemetryService>();
+        services.AddSingleton<IInfraOrchestratorService, InfraOrchestratorService>();
+        services.AddSingleton<ILoadTestHarnessService, LoadTestHarnessService>();
         services.AddScoped<IEventIngestionPipeline, EventIngestionPipeline>();
         services.AddScoped<IDatasetIngestionService, DatasetIngestionService>();
 

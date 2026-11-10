@@ -1,0 +1,24 @@
+title: DNS Tunneling and High-Entropy Data Exfiltration C2
+id: d5e6f7a8-b9c0-1234-ef01-567890123456
+status: stable
+description: Detects signs of DNS tunneling tools (Iodine, dnscat2) or encoded data exfiltration via TXT/NULL DNS queries
+level: critical
+tags:
+    - attack.command_and_control
+    - attack.exfiltration
+    - attack.t1071.004
+    - attack.t1048.003
+logsource:
+    category: dns
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'dnscat2'
+            - 'iodine'
+            - 'dns2tcp'
+            - 'c2.tunnel'
+            - 'tunnel.dns'
+    condition: selection
+falsepositives:
+    - Legitimate anti-spam DNSBL lookups or antivirus cloud domain reputation checks

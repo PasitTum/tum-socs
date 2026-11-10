@@ -1,0 +1,22 @@
+title: Linux Sudoers File Tampering and Unauthorized Escalation
+id: d3e4f5a6-b7c8-9012-cdef-345678901234
+status: stable
+description: Detects unauthorized edits or append operations targeting /etc/sudoers or /etc/sudoers.d to grant NOPASSWD root privileges
+level: critical
+tags:
+    - attack.privilege_escalation
+    - attack.t1548.003
+logsource:
+    category: file_modification
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - '/etc/sudoers'
+            - 'ALL=(ALL) NOPASSWD: ALL'
+            - 'visudo'
+            - 'echo "%wheel ALL=(ALL) NOPASSWD'
+            - 'chmod 777 /etc/sudoers'
+    condition: selection
+falsepositives:
+    - Systems administration automation tools like Ansible or Puppet updating root configs

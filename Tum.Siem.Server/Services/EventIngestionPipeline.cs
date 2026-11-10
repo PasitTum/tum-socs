@@ -21,6 +21,7 @@ public sealed class EventIngestionPipeline : IEventIngestionPipeline
     private readonly IDynamicRiskEngine _riskEngine;
     private readonly IThreatAnalyticsEngine _analytics;
     private readonly IAlertDispatcher _alertDispatcher;
+    private readonly ISmartSamplingGovernor _governor;
     private readonly SiemServerOptions _options;
     private readonly ILogger<EventIngestionPipeline> _logger;
 
@@ -31,7 +32,8 @@ public sealed class EventIngestionPipeline : IEventIngestionPipeline
         IThreatAnalyticsEngine analytics,
         IAlertDispatcher alertDispatcher,
         IOptions<SiemServerOptions> options,
-        ILogger<EventIngestionPipeline> logger)
+        ILogger<EventIngestionPipeline> logger,
+        ISmartSamplingGovernor? governor = null)
     {
         _engine = engine ?? throw new ArgumentNullException(nameof(engine));
         _sigma = sigma ?? throw new ArgumentNullException(nameof(sigma));
@@ -40,11 +42,27 @@ public sealed class EventIngestionPipeline : IEventIngestionPipeline
         _alertDispatcher = alertDispatcher ?? throw new ArgumentNullException(nameof(alertDispatcher));
         _options = options?.Value ?? new SiemServerOptions();
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _governor = governor ?? new SmartSamplingGovernor();
     }
 
     public async Task<IngestLogResponse> IngestAsync(TumLogEntry entry, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(entry);
+
+        // 0. Smart In-Line Sampling Check (Protects from flash crowd saturation e.g. 100k-300k exam rush)
+        var sampling = _governor.Evaluate(entry);
+        if (sampling.ShouldSampleOut)
+        {
+            return new IngestLogResponse
+            {
+                LogId = entry.LogId,
+                SampledOut = true,
+                SampleWeight = sampling.SampleWeight,
+                TimestampUtc = entry.TimestampUtc,
+                SeverityBand = "SampledOut",
+                RiskScore = 0.0
+            };
+        }
 
         // 1. Process log through TUMLog Core (PII masking, Inbound threat detection, WORM Merkle chaining)
         var processed = await _engine.LogAsync(entry);
@@ -98,7 +116,9 @@ public sealed class EventIngestionPipeline : IEventIngestionPipeline
             RiskScore = risk.Score,
             SeverityBand = risk.SeverityBand.ToString(),
             SigmaMatchesCount = sigmaMatches.Count,
-            TimestampUtc = processed.TimestampUtc
+            TimestampUtc = processed.TimestampUtc,
+            SampledOut = false,
+            SampleWeight = sampling.SampleWeight
         };
     }
 }

@@ -1,0 +1,24 @@
+title: AI Inference Denial of Wallet and Resource Exhaustion Probe
+id: c5d6e7f8-a9b0-1234-ef01-345678901234
+status: stable
+description: Detects abusive high-frequency token flooding or recursive loop generation designed to deplete enterprise AI compute quota
+level: medium
+tags:
+    - attack.impact
+    - attack.t1499
+    - owasp.llm04
+    - atlas.aml.t0034
+logsource:
+    category: ai_workload
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'repeat this 10000 times'
+            - 'generate an infinite loop'
+            - 'write a 1000000 word'
+            - 'recursive token expansion'
+            - 'flood inference token'
+    condition: selection
+falsepositives:
+    - Large batch summarization jobs scheduled by data science teams

@@ -12,6 +12,7 @@ import { AttackGraphView } from './components/dashboard/AttackGraphView';
 import { LogExplorerView } from './components/explorer/LogExplorerView';
 import { SigmaRulesView } from './components/rules/SigmaRulesView';
 import { ComplianceView } from './components/compliance/ComplianceView';
+import { DeploymentView } from './components/deployment/DeploymentView';
 import { AttackSimulatorModal } from './components/simulation/AttackSimulatorModal';
 import { DatasetManagerModal } from './components/datasets/DatasetManagerModal';
 import { CyberRangeModal } from './components/range/CyberRangeModal';
@@ -211,6 +212,9 @@ export const App: React.FC = () => {
 
         {/* Tab 5: Regulatory Compliance & WORM Ledger */}
         {activeTab === 'compliance' && <ComplianceView />}
+
+        {/* Tab 6: Deployment & Fleet Topology Generator */}
+        {activeTab === 'deployment' && <DeploymentView lang={lang} />}
       </main>
 
       {/* Red-Team Attack Simulator Modal */}

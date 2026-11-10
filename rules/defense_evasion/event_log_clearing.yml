@@ -1,0 +1,23 @@
+title: Windows Security Event Log Tampering and Clearing
+id: d1e2f3a4-b5c6-7890-abcd-ef1234567890
+status: stable
+description: Detects attempts to clear Windows security event logs or audit trails using wevtutil or PowerShell to evade forensics
+level: critical
+tags:
+    - attack.defense_evasion
+    - attack.t1070.001
+logsource:
+    category: process_creation
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'wevtutil cl'
+            - 'wevtutil clear-log'
+            - 'Clear-EventLog'
+            - 'Remove-EventLog'
+            - 'Limit-EventLog'
+            - 'wevtutil.exe cl Security'
+    condition: selection
+falsepositives:
+    - Automated system maintenance scripts during decommission testing

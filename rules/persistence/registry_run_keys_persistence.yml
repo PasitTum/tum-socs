@@ -1,0 +1,22 @@
+title: Windows Registry Run and RunOnce Persistence Modification
+id: d2e3f4a5-b6c7-8901-bcde-f23456789012
+status: stable
+description: Detects suspicious modifications to Windows Registry Run or RunOnce keys commonly abused by malware for persistent survival across reboots
+level: high
+tags:
+    - attack.persistence
+    - attack.t1547.001
+logsource:
+    category: registry
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - '\CurrentVersion\Run'
+            - '\CurrentVersion\RunOnce'
+            - '\CurrentVersion\RunServices'
+            - 'reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Run"'
+            - 'reg add "HKLM\Software\Microsoft\Windows\CurrentVersion\Run"'
+    condition: selection
+falsepositives:
+    - Legitimate software installers registered by domain administrators

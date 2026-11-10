@@ -1,0 +1,27 @@
+title: Autonomous AI Agent Unauthorized Tool and Command Abuse
+id: aa01bb02-cc03-dd04-ee05-ff06aa07bb08
+status: stable
+description: Detects autonomous agents attempting destructive operating system commands or unauthorized shell execution outside sanctioned sandbox boundaries
+level: critical
+tags:
+    - attack.execution
+    - attack.t1059
+    - owasp.llm08
+    - atlas.aml.t0034
+logsource:
+    category: agentic_runtime
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'rm -rf'
+            - 'rmdir /s /q'
+            - 'del /f /s /q'
+            - 'curl | bash'
+            - 'wget | sh'
+            - 'Invoke-Expression (New-Object Net.WebClient)'
+            - 'nc -e /bin/sh'
+            - 'format c:'
+    condition: selection
+falsepositives:
+    - DevOps automated cleanup jobs running with explicit elevated infrastructure tokens

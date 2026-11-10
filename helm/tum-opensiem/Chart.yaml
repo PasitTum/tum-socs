@@ -1,0 +1,17 @@
+apiVersion: v2
+name: tum-opensiem
+description: TUM-OpenSIEM All-in-One Enterprise Cyber Defense & Regulatory SIEM Appliance
+type: application
+version: 2.0.0
+appVersion: "2.0.0"
+keywords:
+  - siem
+  - cybersecurity
+  - secops
+  - worm-ledger
+  - thai-cca-sec26
+  - pdpa
+  - fips-204
+maintainers:
+  - name: TUM Trust Security Core Engineering
+    email: secops@tum-trust.com

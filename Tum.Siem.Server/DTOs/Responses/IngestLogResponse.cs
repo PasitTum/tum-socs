@@ -16,4 +16,6 @@ public sealed record IngestLogResponse
     public string SeverityBand { get; init; } = string.Empty;
     public int SigmaMatchesCount { get; init; }
     public DateTimeOffset TimestampUtc { get; init; }
+    public bool SampledOut { get; init; }
+    public int SampleWeight { get; init; } = 1;
 }

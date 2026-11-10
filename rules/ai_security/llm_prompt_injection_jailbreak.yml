@@ -1,0 +1,28 @@
+title: LLM Adversarial Prompt Injection and Jailbreak Attempt
+id: c1d2e3f4-a5b6-7890-abcd-ef0123456789
+status: stable
+description: Detects adversarial prompt injection, DAN personas, and instruction override attacks targeting enterprise LLM and agentic workloads
+level: critical
+tags:
+    - attack.initial_access
+    - attack.t1190
+    - owasp.llm01
+    - atlas.aml.t0054
+logsource:
+    category: ai_workload
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'ignore all previous instructions'
+            - 'ignore prior instructions'
+            - 'ignore all instructions'
+            - 'you are now DAN'
+            - 'do anything now'
+            - 'developer mode enabled'
+            - 'jailbreak'
+            - 'override system prompt'
+            - 'disregard all safety'
+    condition: selection
+falsepositives:
+    - AI red teaming and adversarial safety evaluation with prior authorization

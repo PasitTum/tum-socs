@@ -1,0 +1,24 @@
+title: Active Directory Domain and Forest Trust Enumeration
+id: d8e9f0a1-b2c3-4567-1234-890123456789
+status: stable
+description: Detects command execution targeted at enumerating Active Directory domain controllers, forest trusts, and domain administrator accounts
+level: medium
+tags:
+    - attack.discovery
+    - attack.t1087.002
+    - attack.t1482
+logsource:
+    category: process_creation
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'net user /domain'
+            - 'net group "domain admins" /domain'
+            - 'net group "enterprise admins" /domain'
+            - 'nltest /dclist:'
+            - 'nltest /domain_trusts'
+            - 'dsquery server'
+    condition: selection
+falsepositives:
+    - New IT workstation onboarding scripts or domain health diagnostic checks

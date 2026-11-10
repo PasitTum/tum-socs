@@ -1,0 +1,23 @@
+title: Active Directory Kerberoasting Service Ticket Request
+id: d7e8f9a0-b1c2-3456-0123-789012345678
+status: stable
+description: Detects Kerberos TGS ticket requests leveraging weak RC4-HMAC encryption (Ticket Encryption 0x17) characteristic of offline Kerberoasting attacks
+level: high
+tags:
+    - attack.credential_access
+    - attack.t1558.003
+logsource:
+    category: active_directory
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'Ticket_Encryption_Type: 0x17'
+            - 'Service_Name: MSSQLSvc'
+            - 'Kerberoast'
+            - 'Invoke-Kerberoast'
+            - 'Rubeus kerberoast'
+            - 'GetUserSPNs.py'
+    condition: selection
+falsepositives:
+    - Legacy Active Directory domain controllers or legacy non-AES service accounts

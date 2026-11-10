@@ -1,0 +1,26 @@
+title: Office Document Spawning Command Interpreter Child Process
+id: d6e7f8a9-b0c1-2345-f012-678901234567
+status: stable
+description: Detects Microsoft Word or Excel spawning cmd.exe, powershell.exe, or wscript.exe commonly associated with weaponized macro documents
+level: critical
+tags:
+    - attack.initial_access
+    - attack.execution
+    - attack.t1566.001
+    - attack.t1059.001
+logsource:
+    category: process_creation
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'WINWORD.EXE /c powershell'
+            - 'EXCEL.EXE /c powershell'
+            - 'WINWORD.EXE cmd.exe'
+            - 'EXCEL.EXE cmd.exe'
+            - 'WINWORD.EXE wscript.exe'
+            - 'EXCEL.EXE wscript.exe'
+            - 'mshta.exe http'
+    condition: selection
+falsepositives:
+    - Highly customized legacy accounting automation templates

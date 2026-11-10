@@ -1,0 +1,24 @@
+title: Volume Shadow Copy and System Recovery State Deletion
+id: d9e0f1a2-b3c4-5678-2345-901234567890
+status: stable
+description: Detects command line tools invoked to delete volume shadow copies or disable Windows recovery mode commonly executed prior to ransomware encryption
+level: critical
+tags:
+    - attack.impact
+    - attack.defense_evasion
+    - attack.t1490
+logsource:
+    category: process_creation
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'vssadmin delete shadows'
+            - 'vssadmin.exe delete shadows /all /quiet'
+            - 'wmic shadowcopy delete'
+            - 'wbadmin delete catalog -quiet'
+            - 'bcdedit /set {default} bootstatuspolicy ignoreallfailures'
+            - 'bcdedit /set {default} recoveryenabled no'
+    condition: selection
+falsepositives:
+    - Disaster recovery testing performed by authorized infrastructure engineers

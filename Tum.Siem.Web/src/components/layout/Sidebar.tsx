@@ -8,6 +8,7 @@ import {
   Network,
   FileCode,
   Scale,
+  Boxes,
   CheckCircle2,
   UserCheck,
   Radio,
@@ -17,7 +18,7 @@ import type { SystemStatus } from '../../types/siem';
 import type { UserProfile } from '../../types/auth';
 import { translations, type Language } from '../../i18n/translations';
 
-export type ActiveTab = 'radar' | 'explorer' | 'graph' | 'rules' | 'compliance';
+export type ActiveTab = 'radar' | 'explorer' | 'graph' | 'rules' | 'compliance' | 'deployment';
 
 interface SidebarProps {
   activeTab: ActiveTab;
@@ -46,6 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'graph' as ActiveTab, label: t.navGraph, subtitle: t.navGraphSub, icon: Network },
     { id: 'rules' as ActiveTab, label: t.navRules, subtitle: t.navRulesSub, icon: FileCode },
     { id: 'compliance' as ActiveTab, label: t.navCompliance, subtitle: t.navComplianceSub, icon: Scale },
+    { id: 'deployment' as ActiveTab, label: t.navDeployment, subtitle: t.navDeploymentSub, icon: Boxes },
   ];
 
   const sidebarContent = (

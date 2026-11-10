@@ -16,6 +16,7 @@ import {
   FileCode,
   Scale,
   Layers,
+  Boxes,
 } from 'lucide-react';
 import type { ActiveTab } from './Sidebar';
 import { translations, type Language } from '../../i18n/translations';
@@ -85,6 +86,11 @@ export const Header: React.FC<HeaderProps> = ({
       title: t.complianceTitle,
       subtitle: t.complianceSubtitle,
       icon: Scale,
+    },
+    deployment: {
+      title: t.deploymentTitle,
+      subtitle: t.deploymentSubtitle,
+      icon: Boxes,
     },
   };
 

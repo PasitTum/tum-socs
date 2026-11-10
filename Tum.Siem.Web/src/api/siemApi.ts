@@ -177,4 +177,87 @@ export const siemApi = {
     });
     return handleResponse<RegisterSigmaRuleResult>(res);
   },
+
+  // Deployment Generator Endpoints
+  async generateDeployment(config: Partial<import('../types/siem').DeploymentConfig>): Promise<import('../types/siem').DeploymentBundle> {
+    const res = await fetch(`${API_BASE}/deployment/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(config),
+    });
+    return handleResponse<import('../types/siem').DeploymentBundle>(res);
+  },
+
+  async downloadDeploymentZip(config: Partial<import('../types/siem').DeploymentConfig>): Promise<Blob> {
+    const res = await fetch(`${API_BASE}/deployment/download`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(config),
+    });
+    if (!res.ok) {
+      throw new Error(`Failed to download deployment package: ${res.statusText}`);
+    }
+    return res.blob();
+  },
+
+  // Smart Sampling & Flash Crowd Governor Endpoints
+  async getGovernorStatus(): Promise<import('../types/siem').GovernorStats> {
+    const res = await fetch(`${API_BASE}/governor/status`, {
+      headers: { ...getAuthHeader() },
+    });
+    return handleResponse<import('../types/siem').GovernorStats>(res);
+  },
+
+  async configureGovernor(config: { forceSurge?: boolean; surgeThresholdEps?: number; benignSampleRate?: number }): Promise<import('../types/siem').GovernorStats> {
+    const res = await fetch(`${API_BASE}/governor/configure`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(config),
+    });
+    return handleResponse<import('../types/siem').GovernorStats>(res);
+  },
+
+  // Live Host Telemetry & Cloud Orchestration Endpoints
+  async getInfraNodes(): Promise<import('../types/siem').HostNodeMetrics[]> {
+    const res = await fetch(`${API_BASE}/infra/nodes`, {
+      headers: { ...getAuthHeader() },
+    });
+    return handleResponse<import('../types/siem').HostNodeMetrics[]>(res);
+  },
+
+  async scaleInfra(request: Partial<import('../types/siem').CloudScaleRequest>): Promise<import('../types/siem').CloudScaleResult> {
+    const res = await fetch(`${API_BASE}/infra/orchestrate/scale`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(request),
+    });
+    return handleResponse<import('../types/siem').CloudScaleResult>(res);
+  },
+
+  async executeHostCommand(request: import('../types/siem').HostCommandRequest): Promise<import('../types/siem').HostCommandResult> {
+    const res = await fetch(`${API_BASE}/infra/orchestrate/command`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(request),
+    });
+    return handleResponse<import('../types/siem').HostCommandResult>(res);
+  },
+
+  async runLoadTest(scenario: Partial<import('../types/siem').LoadTestScenario>): Promise<import('../types/siem').LoadTestRunResult> {
+    const res = await fetch(`${API_BASE}/infra/loadtest/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(scenario),
+    });
+    return handleResponse<import('../types/siem').LoadTestRunResult>(res);
+  },
+
+  async generateReadinessCertificate(result?: Partial<import('../types/siem').LoadTestRunResult>): Promise<import('../types/siem').InfraReadinessCertificate> {
+    const res = await fetch(`${API_BASE}/infra/loadtest/certificate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
+      body: JSON.stringify(result ?? {}),
+    });
+    return handleResponse<import('../types/siem').InfraReadinessCertificate>(res);
+  },
 };

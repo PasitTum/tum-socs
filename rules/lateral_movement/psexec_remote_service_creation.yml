@@ -1,0 +1,24 @@
+title: PsExec and Remote Service Execution Across Network
+id: d4e5f6a7-b8c9-0123-def0-456789012345
+status: stable
+description: Detects PsExec execution, SMB named pipe abuse, or remote Windows service creation used by threat actors for lateral movement
+level: high
+tags:
+    - attack.lateral_movement
+    - attack.t1021.002
+    - attack.t1569.002
+logsource:
+    category: process_creation
+    product: tumlog
+detection:
+    selection:
+        PayloadSanitized|contains:
+            - 'psexec'
+            - 'paexec'
+            - 'PSEXESVC'
+            - 'remcom'
+            - 'sc create \\'
+            - 'wmic /node:'
+    condition: selection
+falsepositives:
+    - IT system administrators conducting remote fleet patching outside maintenance windows
