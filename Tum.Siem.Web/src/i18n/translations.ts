@@ -6,8 +6,8 @@ export type Language = 'th' | 'en';
 export const translations = {
   th: {
     // Brand & Navigation
-    brandName: 'TUM-SOC Platform',
-    brandSubtitle: 'Sovereign SIEM & Defense Core',
+    brandName: 'TUM-SIEM Platform',
+    brandSubtitle: 'Sovereign Enterprise SIEM & Security Intelligence',
     navRadar: 'เรดาร์ภัยคุกคาม',
     navRadarSub: 'Threat Radar & HUD',
     navExplorer: 'ค้นหา Log พยานหลักฐาน',
@@ -122,8 +122,8 @@ export const translations = {
   },
   en: {
     // Brand & Navigation
-    brandName: 'TUM-SOC Platform',
-    brandSubtitle: 'Sovereign SIEM & Defense Core',
+    brandName: 'TUM-SIEM Platform',
+    brandSubtitle: 'Sovereign Enterprise SIEM & Security Intelligence',
     navRadar: 'Threat Radar HUD',
     navRadarSub: 'Real-time Defense',
     navExplorer: 'Event Query Explorer',
