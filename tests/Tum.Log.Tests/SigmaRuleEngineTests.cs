@@ -152,5 +152,100 @@ detection:
             Assert.Single(matches);
             Assert.Equal("rule-path-traversal-002", matches[0].RuleId);
         }
+
+        [Fact]
+        public void SigmaRuleEngine_InvertedIndexing_PartitionsRulesAndGuardsAgainstEvasion()
+        {
+            var engine = new SigmaRuleEngine();
+
+            // 1. Register 30 dummy process_creation rules
+            for (int i = 1; i <= 30; i++)
+            {
+                engine.RegisterRule(new SigmaRule
+                {
+                    Id = $"rule-process-{i:D3}",
+                    Title = $"Suspicious Process Execution {i}",
+                    Level = SigmaRuleLevel.Medium,
+                    LogSource = new SigmaLogSource { Category = "process_creation" },
+                    Selections = new Dictionary<string, Dictionary<string, List<string>>>
+                    {
+                        ["selection"] = new Dictionary<string, List<string>>
+                        {
+                            ["PayloadSanitized|contains"] = new List<string> { $"malicious_proc_{i}.exe" }
+                        }
+                    },
+                    Condition = "selection"
+                });
+            }
+
+            // 2. Register 1 specific process execution rule detecting cmd.exe
+            engine.RegisterRule(new SigmaRule
+            {
+                Id = "rule-proc-cmd-exec",
+                Title = "Windows Command Shell Execution",
+                Level = SigmaRuleLevel.High,
+                LogSource = new SigmaLogSource { Category = "process_creation" },
+                Selections = new Dictionary<string, Dictionary<string, List<string>>>
+                {
+                    ["selection"] = new Dictionary<string, List<string>>
+                    {
+                        ["PayloadSanitized|contains"] = new List<string> { "cmd.exe" }
+                    }
+                },
+                Condition = "selection"
+            });
+
+            // 3. Register 1 webserver rule
+            engine.RegisterRule(new SigmaRule
+            {
+                Id = "rule-web-sqli-001",
+                Title = "Web SQL Injection",
+                Level = SigmaRuleLevel.Critical,
+                LogSource = new SigmaLogSource { Category = "webserver" },
+                Selections = new Dictionary<string, Dictionary<string, List<string>>>
+                {
+                    ["selection"] = new Dictionary<string, List<string>>
+                    {
+                        ["PayloadSanitized|contains"] = new List<string> { "UNION SELECT" }
+                    }
+                },
+                Condition = "selection"
+            });
+
+            Assert.Equal(32, engine.ActiveRuleCount);
+
+            // Case A: Web traffic with SQLi -> correctly matches web rule via inverted index
+            var webEntry = new TumLogEntry
+            {
+                RequestPath = "/api/v1/search",
+                HttpMethod = "GET",
+                PayloadSanitized = "GET /api/v1/search?q=1 UNION SELECT 1,2,3"
+            };
+            var webMatches = engine.Evaluate(webEntry);
+            Assert.Single(webMatches);
+            Assert.Equal("rule-web-sqli-001", webMatches[0].RuleId);
+
+            // Case B: Evasive Log: Attacker sets Category to AuditTrail and EventName to benign,
+            // but payload contains disguised 'cmd.exe' command injection -> caught by Anti-Bypass Guard
+            var evasiveEntry = new TumLogEntry
+            {
+                Category = LogCategory.AuditTrail,
+                EventName = "System.HealthCheck",
+                PayloadSanitized = "PING status=ok; cmd.exe /c whoami"
+            };
+            var evasiveMatches = engine.Evaluate(evasiveEntry);
+            Assert.Single(evasiveMatches);
+            Assert.Equal("rule-proc-cmd-exec", evasiveMatches[0].RuleId);
+
+            // Case C: Completely benign audit log -> 0 matches
+            var benignEntry = new TumLogEntry
+            {
+                Category = LogCategory.AuditTrail,
+                EventName = "User.ProfileUpdate",
+                PayloadSanitized = "User updated profile photo successfully."
+            };
+            var benignMatches = engine.Evaluate(benignEntry);
+            Assert.Empty(benignMatches);
+        }
     }
 }
